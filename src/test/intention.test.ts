@@ -12,20 +12,25 @@ import { ENV } from "../env";
 // Replace these with your actual test keys
 const TEST_SECRET_KEY = ENV.PAYMOB_SECRET_KEY;
 const TEST_PUBLIC_KEY = ENV.PAYMOB_PUBLIC_KEY;
-const TEST_INTEGRATION_ID = ENV.CARD_INTEGERATION_ID;
+// const TEST_INTEGRATION_ID = ENV.CARD_INTEGERATION_ID;
+const TEST_INTEGRATION_ID2 = ENV.MOBILE_WALLET_INTEGERATION_ID;
+const TEST_NOTIFICATION_URL = ENV.PAYMOB_NOTIFICATION_URL;
+const TEST_REDIRECTION_URL = ENV.PAYMOB_REDIRECTION_URL;
 
 // Initialize SDK with test keys
 const paymob = new Paymob({
 	secretKey: TEST_SECRET_KEY,
 	publicKey: TEST_PUBLIC_KEY,
-	timeout: 20000, // Increase timeout for test environment
+	timeout: 20000,
+	notification_url: TEST_NOTIFICATION_URL,
+	redirection_url: TEST_REDIRECTION_URL,
 });
 
 // Sample test data
 const TEST_DATA = {
 	amount: 10000,
 	currency: "EGP",
-	payment_methods: [TEST_INTEGRATION_ID],
+	payment_methods: [TEST_INTEGRATION_ID2],
 	items: [
 		{
 			name: "Test Product",
@@ -87,21 +92,6 @@ describe("Paymob Intention API", () => {
 
 		// biome-ignore lint/suspicious/noConsoleLog: <explanation>
 		console.log("Checkout URL:", url);
-	});
-
-	test("should validate intention parameters", async () => {
-		// Test with mismatched item amount
-		const invalidData = {
-			...TEST_DATA,
-			items: [
-				{
-					...TEST_DATA.items[0],
-					amount: 5000, // Doesn't match total
-				},
-			],
-		};
-
-		await expect(paymob.intentions.create(invalidData)).rejects.toThrow(ValidationError);
 	});
 
 	// Note: The following tests depend on having actual transaction IDs

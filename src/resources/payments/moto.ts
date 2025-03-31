@@ -5,7 +5,8 @@
 
 import type { HttpClient } from "../../core/client";
 import { ValidationError } from "../../errors";
-import type { MotoRequest, MotoResponse } from "../../types";
+import { motoRequestSchema, type MotoRequestInput, type MotoResponseOutput } from "../../types";
+import * as v from "valibot";
 
 export class MotoResource {
 	private client: HttpClient;
@@ -17,30 +18,20 @@ export class MotoResource {
 	/**
 	 * Process a MOTO payment using a stored card token
 	 */
-	public async pay(params: MotoRequest): Promise<MotoResponse> {
+	public async pay(params: MotoRequestInput): Promise<MotoResponseOutput> {
 		this.validateMotoRequest(params);
 
-		return this.client.post<MotoResponse>("/api/acceptance/payments/pay", params);
+		return this.client.post<MotoResponseOutput>("/api/acceptance/payments/pay", params);
 	}
 
 	/**
 	 * Validate MOTO payment request
 	 */
-	private validateMotoRequest(params: MotoRequest): void {
-		if (!params.source) {
-			throw new ValidationError("source is required");
-		}
+	private validateMotoRequest(params: MotoRequestInput): void {
+		const result = v.safeParse(motoRequestSchema, params);
 
-		if (!params.source.identifier) {
-			throw new ValidationError("source.identifier (card token) is required");
-		}
-
-		if (!params.source.subtype || params.source.subtype !== "TOKEN") {
-			throw new ValidationError('source.subtype must be "TOKEN"');
-		}
-
-		if (!params.payment_token) {
-			throw new ValidationError("payment_token is required");
+		if (!result.success) {
+			throw new ValidationError(result.issues.map((issue) => issue.message).join(", "));
 		}
 	}
 }

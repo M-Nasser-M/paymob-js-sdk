@@ -1,51 +1,19 @@
-/**
- * Core HTTP client for Paymob SDK
- * Implements a type-safe API client using native fetch with automatic retry for 5xx errors
- */
+import { PaymobAPIError } from "../errors";
+import type { PaymobConfigOutput } from "../types";
 
-import { ConfigurationError, PaymobAPIError } from "../errors";
-import type { PaymobConfig } from "../types";
+type HttpMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
 
-// Default configuration values
-export const DEFAULT_TIMEOUT = 10000; // 10 seconds
-export const DEFAULT_RETRY_ATTEMPTS = 3;
-export const DEFAULT_API_BASE_URL = "https://accept.paymob.com";
-
-/**
- * HTTP methods supported by the client
- */
-export type HttpMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
-
-/**
- * Core HTTP client that handles API communication with Paymob
- */
 export class HttpClient {
-	private readonly _config: Required<PaymobConfig>;
+	private readonly _config: Required<PaymobConfigOutput>;
 
-	/**
-	 * Creates a new HTTP client instance
-	 *
-	 * @param config - SDK configuration options
-	 * @throws {ConfigurationError} When required configuration is missing
-	 */
-	constructor(config: PaymobConfig) {
-		if (!config.secretKey) {
-			throw new ConfigurationError("Secret key is required");
-		}
-
-		this._config = {
-			secretKey: config.secretKey,
-			publicKey: config.publicKey || "",
-			apiBaseUrl: config.apiBaseUrl || DEFAULT_API_BASE_URL,
-			timeout: config.timeout || DEFAULT_TIMEOUT,
-			retryAttempts: config.retryAttempts || DEFAULT_RETRY_ATTEMPTS,
-		};
+	constructor(config: PaymobConfigOutput) {
+		this._config = config;
 	}
 
 	/**
 	 * Get a copy of the current configuration
 	 */
-	public get config(): Required<PaymobConfig> {
+	public get config(): Required<PaymobConfigOutput> {
 		return { ...this._config };
 	}
 
@@ -153,7 +121,7 @@ export class HttpClient {
 			try {
 				const response = await fetch(url, options);
 				clearTimeout(timeoutId);
-				
+
 				return await this.processResponse<TResponse>(response);
 			} catch (error) {
 				lastError = error as Error;
