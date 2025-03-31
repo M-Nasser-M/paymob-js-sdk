@@ -10,7 +10,6 @@ import * as v from "valibot";
 
 export class MotoResource {
 	private client: HttpClient;
-
 	constructor(client: HttpClient) {
 		this.client = client;
 	}

@@ -1,20 +1,23 @@
-import { PaymobAPIError } from "../errors";
-import type { PaymobConfigOutput } from "../types";
+import { ConfigurationError, PaymobAPIError } from "../errors";
+import {
+	type HttpClientConfigInput,
+	HttpClientConfigSchema,
+	type HttpClientConfigOutput,
+} from "../types";
+import * as v from "valibot";
 
 type HttpMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
 
 export class HttpClient {
-	private readonly _config: Required<PaymobConfigOutput>;
+	private readonly _config: Required<HttpClientConfigOutput>;
 
-	constructor(config: PaymobConfigOutput) {
-		this._config = config;
-	}
+	constructor(config: HttpClientConfigInput) {
+		const parsedConfig = v.safeParse(HttpClientConfigSchema, config);
+		if (!parsedConfig.success) {
+			throw new ConfigurationError("Invalid HTTP client configuration");
+		}
 
-	/**
-	 * Get a copy of the current configuration
-	 */
-	public get config(): Required<PaymobConfigOutput> {
-		return { ...this._config };
+		this._config = parsedConfig.output;
 	}
 
 	/**
@@ -144,12 +147,6 @@ export class HttpClient {
 		throw lastError || new PaymobAPIError("Unknown API error", 500);
 	}
 
-	/**
-	 * Performs a GET request to the API
-	 *
-	 * @param path - API endpoint path
-	 * @param headers - Optional additional headers
-	 */
 	public async get<TResponse>(
 		path: string,
 		headers?: Record<string, string>,
@@ -157,13 +154,6 @@ export class HttpClient {
 		return this.request<TResponse>("GET", path, undefined, headers);
 	}
 
-	/**
-	 * Performs a POST request to the API
-	 *
-	 * @param path - API endpoint path
-	 * @param data - Request body data
-	 * @param headers - Optional additional headers
-	 */
 	public async post<TResponse>(
 		path: string,
 		data?: unknown,
@@ -172,13 +162,6 @@ export class HttpClient {
 		return this.request<TResponse>("POST", path, data, headers);
 	}
 
-	/**
-	 * Performs a PUT request to the API
-	 *
-	 * @param path - API endpoint path
-	 * @param data - Request body data
-	 * @param headers - Optional additional headers
-	 */
 	public async put<TResponse>(
 		path: string,
 		data?: unknown,
@@ -187,12 +170,6 @@ export class HttpClient {
 		return this.request<TResponse>("PUT", path, data, headers);
 	}
 
-	/**
-	 * Performs a DELETE request to the API
-	 *
-	 * @param path - API endpoint path
-	 * @param headers - Optional additional headers
-	 */
 	public async delete<TResponse>(
 		path: string,
 		headers?: Record<string, string>,

@@ -7,12 +7,14 @@ import { HttpClient } from "./client";
 import { ConfigurationError } from "../errors";
 import { IntentionResource } from "../resources/payments/intention";
 import { MotoResource } from "../resources/payments/moto";
-import { paymobConfigSchema, type PaymobConfigInput } from "../types";
+import { type PaymobConfigOutput, paymobConfigSchema, type PaymobConfigInput } from "../types";
 import * as v from "valibot";
 
 export class Paymob {
 	/** HTTP client for API calls */
 	private readonly client: HttpClient;
+	/** Configuration for the Paymob SDK */
+	private readonly config: Required<PaymobConfigOutput>;
 
 	/** API resources */
 	public readonly intentions: IntentionResource;
@@ -26,11 +28,12 @@ export class Paymob {
 		if (!parsedConfig.success) {
 			throw new ConfigurationError("Invalid configuration");
 		}
+		this.config = parsedConfig.output;
 		// Initialize the HTTP client
 		this.client = new HttpClient(parsedConfig.output);
 
 		// Initialize API resources
-		this.intentions = new IntentionResource(this.client);
+		this.intentions = new IntentionResource(this.client, parsedConfig.output);
 		this.moto = new MotoResource(this.client);
 	}
 
@@ -40,12 +43,6 @@ export class Paymob {
 	 * @returns Full checkout URL to redirect the customer
 	 */
 	public getCheckoutUrl(clientSecret: string): string {
-		const config = this.client.config;
-
-		if (!config.publicKey) {
-			throw new ConfigurationError("publicKey is required to generate checkout URL");
-		}
-
-		return this.intentions.getCheckoutUrl(config.publicKey, clientSecret);
+		return this.intentions.getCheckoutUrl(clientSecret);
 	}
 }

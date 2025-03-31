@@ -39,6 +39,9 @@ import { Paymob } from '@paymob/sdk';
 const paymob = new Paymob({
   secretKey: 'YOUR_SECRET_KEY',
   publicKey: 'YOUR_PUBLIC_KEY',
+  integrationIds: ['YOUR_INTEGRATION_ID'],
+  notificationUrl: 'YOUR_NOTIFICATION_URL',
+  redirectionUrl: 'YOUR_REDIRECTION_URL',
   // Optional configurations
   apiBaseUrl: 'https://accept.paymob.com', // Default
   timeout: 10000, // Default: 10 seconds

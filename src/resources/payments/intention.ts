@@ -15,6 +15,7 @@ import {
 	type CaptureResponseOutput,
 	type VoidRequestInput,
 	type VoidResponseOutput,
+	type PaymobConfigOutput,
 	createIntentionRequestSchema,
 	voidRequestSchema,
 	captureRequestSchema,
@@ -23,25 +24,28 @@ import {
 
 export class IntentionResource {
 	private client: HttpClient;
+	private readonly config: Required<PaymobConfigOutput>;
 
-	constructor(client: HttpClient) {
+	constructor(client: HttpClient, config: Required<PaymobConfigOutput>) {
 		this.client = client;
+		this.config = config;
 	}
 
-	/**
-	 * Create a new payment intention
-	 */
 	public async create(
 		params: CreateIntentionRequestInput,
 	): Promise<CreateIntentionResponseOutput> {
-		this.validateCreateIntentionRequest(params);
+		const defaults = {
+			payment_methods: this.config.payment_methods,
+			notification_url: this.config.notification_url,
+			redirection_url: this.config.redirection_url,
+		};
+		const completeParams = { ...defaults, ...params };
 
-		return this.client.post<CreateIntentionResponseOutput>("/v1/intention/", params);
+		this.validateCreateIntentionRequest(completeParams);
+
+		return this.client.post<CreateIntentionResponseOutput>("/v1/intention/", completeParams);
 	}
 
-	/**
-	 * Process a refund for a transaction
-	 */
 	public async refund(params: RefundRequestInput): Promise<RefundResponseOutput> {
 		const result = v.safeParse(refundRequestSchema, params);
 
@@ -52,9 +56,6 @@ export class IntentionResource {
 		return this.client.post<RefundResponseOutput>("/api/acceptance/void_refund/refund", params);
 	}
 
-	/**
-	 * Capture a previously authorized payment
-	 */
 	public async capture(params: CaptureRequestInput): Promise<CaptureResponseOutput> {
 		const result = v.safeParse(captureRequestSchema, params);
 
@@ -65,9 +66,6 @@ export class IntentionResource {
 		return this.client.post<CaptureResponseOutput>("/api/acceptance/capture", params);
 	}
 
-	/**
-	 * Void (cancel) a transaction
-	 */
 	public async void(params: VoidRequestInput): Promise<VoidResponseOutput> {
 		const result = v.safeParse(voidRequestSchema, params);
 
@@ -78,16 +76,10 @@ export class IntentionResource {
 		return this.client.post<VoidResponseOutput>("/api/acceptance/void_refund/void", params);
 	}
 
-	/**
-	 * Get the checkout URL for a created intention
-	 */
-	public getCheckoutUrl(publicKey: string, clientSecret: string): string {
-		return `https://accept.paymob.com/unifiedcheckout/?publicKey=${publicKey}&clientSecret=${clientSecret}`;
+	public getCheckoutUrl(clientSecret: string): string {
+		return `https://accept.paymob.com/unifiedcheckout/?publicKey=${this.config.publicKey}&clientSecret=${clientSecret}`;
 	}
 
-	/**
-	 * Validate the create intention request
-	 */
 	private validateCreateIntentionRequest(params: CreateIntentionRequestInput): void {
 		const result = v.safeParse(createIntentionRequestSchema, params);
 
