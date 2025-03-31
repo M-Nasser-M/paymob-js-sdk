@@ -55,7 +55,6 @@ const paymob = new Paymob({
 const intentionResponse = await paymob.intentions.create({
   amount: 10000, // amount in cents
   currency: 'EGP',
-  payment_methods: [12345], // Your integration ID(s)
   items: [
     {
       name: 'Product 1',
@@ -88,9 +87,7 @@ const intentionResponse = await paymob.intentions.create({
   extras: {
     custom_field: 'custom_value'
   },
-  special_reference: 'order-123456',
-  notification_url: 'https://your-webhook.com/payment-callback',
-  redirection_url: 'https://your-website.com/payment-complete'
+  special_reference: 'order-123456', //also name merchat_order_id so you can set you own order id in Paymob
 });
 
 // Get client_secret from response
