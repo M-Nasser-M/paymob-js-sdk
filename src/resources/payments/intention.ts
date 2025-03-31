@@ -9,18 +9,10 @@ import * as v from "valibot";
 import {
 	type CreateIntentionRequestInput,
 	type CreateIntentionResponseOutput,
-	type RefundRequestInput,
-	type RefundResponseOutput,
-	type CaptureRequestInput,
-	type CaptureResponseOutput,
-	type VoidRequestInput,
-	type VoidResponseOutput,
-	type PaymobConfigOutput,
 	createIntentionRequestSchema,
-	voidRequestSchema,
-	captureRequestSchema,
-	refundRequestSchema,
-} from "../../types";
+} from "../../types/intention";
+import { type PaymobConfigOutput } from "../../types/config";
+import { CaptureRequestInput, captureRequestSchema, CaptureResponseOutput, RefundRequestInput, refundRequestSchema, RefundResponseOutput, VoidRequestInput, voidRequestSchema, VoidResponseOutput } from "../../types/transactions";
 
 export class IntentionResource {
 	private client: HttpClient;

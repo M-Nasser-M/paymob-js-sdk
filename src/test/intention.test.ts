@@ -12,7 +12,7 @@ import { ENV } from "../env";
 const TEST_SECRET_KEY = ENV.PAYMOB_SECRET_KEY;
 const TEST_PUBLIC_KEY = ENV.PAYMOB_PUBLIC_KEY;
 const TEST_INTEGRATION_ID = ENV.CARD_INTEGERATION_ID;
-// const TEST_INTEGRATION_ID2 = ENV.MOBILE_WALLET_INTEGERATION_ID;
+const TEST_INTEGRATION_ID2 = ENV.MOBILE_WALLET_INTEGERATION_ID;
 const TEST_NOTIFICATION_URL = ENV.PAYMOB_NOTIFICATION_URL;
 const TEST_REDIRECTION_URL = ENV.PAYMOB_REDIRECTION_URL;
 const TEST_API_KEY = ENV.PAYMOB_API_KEY;
@@ -22,7 +22,7 @@ const paymob = new Paymob({
 	secretKey: TEST_SECRET_KEY,
 	publicKey: TEST_PUBLIC_KEY,
 	apiKey: TEST_API_KEY,
-	payment_methods: [TEST_INTEGRATION_ID],
+	payment_methods: ["wallet", "card"],
 	timeout: 20000,
 	notification_url: TEST_NOTIFICATION_URL,
 	redirection_url: TEST_REDIRECTION_URL,
@@ -32,7 +32,6 @@ const paymob = new Paymob({
 const TEST_DATA = {
 	amount: 10000,
 	currency: "EGP",
-	payment_methods: [TEST_INTEGRATION_ID],
 	items: [
 		{
 			name: "Test Product",

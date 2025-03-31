@@ -7,14 +7,12 @@ import { HttpClient } from "./client";
 import { ConfigurationError } from "../errors";
 import { IntentionResource } from "../resources/payments/intention";
 import { MotoResource } from "../resources/payments/moto";
-import { type PaymobConfigOutput, paymobConfigSchema, type PaymobConfigInput } from "../types";
 import * as v from "valibot";
+import { type PaymobConfigInput, paymobConfigSchema } from "../types/config";
 
 export class Paymob {
 	/** HTTP client for API calls */
 	private readonly client: HttpClient;
-	/** Configuration for the Paymob SDK */
-	private readonly config: Required<PaymobConfigOutput>;
 
 	/** API resources */
 	public readonly intentions: IntentionResource;
@@ -28,7 +26,6 @@ export class Paymob {
 		if (!parsedConfig.success) {
 			throw new ConfigurationError("Invalid configuration");
 		}
-		this.config = parsedConfig.output;
 		// Initialize the HTTP client
 		this.client = new HttpClient(parsedConfig.output);
 

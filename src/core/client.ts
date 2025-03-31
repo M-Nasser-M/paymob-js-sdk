@@ -3,7 +3,7 @@ import {
 	type HttpClientConfigInput,
 	HttpClientConfigSchema,
 	type HttpClientConfigOutput,
-} from "../types";
+} from "../types/config";
 import * as v from "valibot";
 
 type HttpMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";

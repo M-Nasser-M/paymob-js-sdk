@@ -5,7 +5,7 @@
 
 import type { HttpClient } from "../../core/client";
 import { ValidationError } from "../../errors";
-import { motoRequestSchema, type MotoRequestInput, type MotoResponseOutput } from "../../types";
+import { motoRequestSchema, type MotoRequestInput, type MotoResponseOutput } from "../../types/moto";
 import * as v from "valibot";
 
 export class MotoResource {

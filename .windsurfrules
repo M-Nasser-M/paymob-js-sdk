@@ -40,7 +40,6 @@ src/
   core/
   resources/
     payments/
-    authentication/
   utils/
   errors/
   types/
