@@ -5,15 +5,14 @@
 
 import { describe, test, expect } from "bun:test";
 import { Paymob } from "../core/paymob";
-import { ValidationError } from "../errors";
 import { ENV } from "../env";
 
 // Test keys for Paymob API
 // Replace these with your actual test keys
 const TEST_SECRET_KEY = ENV.PAYMOB_SECRET_KEY;
 const TEST_PUBLIC_KEY = ENV.PAYMOB_PUBLIC_KEY;
-// const TEST_INTEGRATION_ID = ENV.CARD_INTEGERATION_ID;
-const TEST_INTEGRATION_ID2 = ENV.MOBILE_WALLET_INTEGERATION_ID;
+const TEST_INTEGRATION_ID = ENV.CARD_INTEGERATION_ID;
+// const TEST_INTEGRATION_ID2 = ENV.MOBILE_WALLET_INTEGERATION_ID;
 const TEST_NOTIFICATION_URL = ENV.PAYMOB_NOTIFICATION_URL;
 const TEST_REDIRECTION_URL = ENV.PAYMOB_REDIRECTION_URL;
 
@@ -30,7 +29,7 @@ const paymob = new Paymob({
 const TEST_DATA = {
 	amount: 10000,
 	currency: "EGP",
-	payment_methods: [TEST_INTEGRATION_ID2],
+	payment_methods: [TEST_INTEGRATION_ID],
 	items: [
 		{
 			name: "Test Product",

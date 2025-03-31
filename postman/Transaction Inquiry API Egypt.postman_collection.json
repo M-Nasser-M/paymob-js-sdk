@@ -1,0 +1,163 @@
+{
+	"info": {
+		"_postman_id": "e77ae6f0-3fb8-483b-818e-054c335b603f",
+		"name": "Transaction Inquiry API Egypt",
+		"description": "This API collection facilitates interactions with the PayMob transaction service. It offers methods to query transaction details using various identifiers such as _**merchant order ID**_, _**PayMob order ID**_, or _**PayMob transaction ID**_. These endpoints enable verification of transactions, status checks, and retrieval of associated information.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22339621"
+	},
+	"item": [
+		{
+			"name": "Auth_API",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"AUTH_TOKEN\", jsonData.token);",
+							"postman.setEnvironmentVariable(\"MERCHANT_ID\", jsonData.profile.id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": "Specifies that the request body is in JSON format."
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"api_key\": \"{{API_KEY}}\"\n}"
+				},
+				"url": {
+					"raw": "https://accept.paymob.com/api/auth/tokens",
+					"protocol": "https",
+					"host": [
+						"accept",
+						"paymob",
+						"com"
+					],
+					"path": [
+						"api",
+						"auth",
+						"tokens"
+					]
+				},
+				"description": "Endpoint to generate an authentication token. Replace `{BASE_URL}` with the base URL of the corresponding region you're integrated in.\n\n**Regions:**\n\n- KSA BASE_URL: [<u>https://ksa.paymob.com</u>](https://ksa.paymob.com)\n    \n- EGY BASE_URL: [<u>https://accept.paymob.com</u>](https://accept.paymob.com)\n    \n- UAE BASE_URL: [<u>https://uae.paymob.com</u>](https://uae.paymob.com)\n    \n- OMN BASE_URL: [<u>https://oman.paymob.com</u>](https://oman.paymob.com)\n    \n- PAK BASE_URL: [<u>https://pakistan.paymob.com</u>](https://pakistan.paymob.com)\n    \n\nThis token must be included in the headers of subsequent API requests.\n\nWithin the Body, replace the `{API_KEY}` with your account API Key which can be found in the <u><i>settings tab</i></u> upon logging in into your account through:\n\n**Regions:**\n\n- KSA Portal: [KSA Paymob Portal](https://ksa.paymob.com/portal2/en/login)\n    \n- EGY Portal: [EGP Paymob Portal](https://accept.paymob.com/portal2/en/home)\n    \n- UAE Portal: [UAE Paymob Portal](https://uae.paymob.com/portal2/en/home)\n    \n- OMN Portal: [OMN Paymob Portal](https://oman.paymob.com/portal2/en/home)\n    \n- PAK Portal: [PAK Paymob Portal](https://pakistan.paymob.com/portal2/en/home)\n    \n\n<img src=\"https://content.pstmn.io/8acb9f09-4bdf-40d0-a22e-03a6f764c5e7/aW1hZ2UucG5n\" alt=\"\" height=\"837\" width=\"954\">"
+			},
+			"response": []
+		},
+		{
+			"name": "Transaction_inquiry_Merchant_Order_ID",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": "Specifies that the request body is in JSON format."
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"auth_token\": \"{{AUTH_TOKEN}}\", //token obtained from step 1 Auth_API\r\n    \"merchant_order_id\": \"{{merchant_order_id}}\" // special reference used in the the intention request\r\n}"
+				},
+				"url": {
+					"raw": "https://accept.paymob.com/api/ecommerce/orders/transaction_inquiry",
+					"protocol": "https",
+					"host": [
+						"accept",
+						"paymob",
+						"com"
+					],
+					"path": [
+						"api",
+						"ecommerce",
+						"orders",
+						"transaction_inquiry"
+					]
+				},
+				"description": "Endpoint to retrieve transaction details using the merchant's order ID. Ensure you have a valid authentication token (`AUTH_TOKEN`) and the correct merchant order ID.\n\n**Query by Merchant Order ID**\n\n- **Endpoint:** `/api/ecommerce/orders/transaction_inquiry`\n    \n- **Method:** POST\n    \n- **Description:** Retrieves transaction details using the merchant's unique order ID.\n    \n- **Parameters:**\n    \n    - `merchant_order_id`: The unique identifier assigned to the transaction by the merchant."
+			},
+			"response": []
+		},
+		{
+			"name": "Transaction_inquiry_Order_ID",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": "Specifies that the request body is in JSON format."
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"auth_token\": \"{{AUTH_TOKEN}}\", //token obtained from step 1 Auth_API\r\n    \"order_id\": \"{{PayMob_ORDER_ID}}\"\r\n}"
+				},
+				"url": {
+					"raw": "https://accept.paymob.com/api/ecommerce/orders/transaction_inquiry",
+					"protocol": "https",
+					"host": [
+						"accept",
+						"paymob",
+						"com"
+					],
+					"path": [
+						"api",
+						"ecommerce",
+						"orders",
+						"transaction_inquiry"
+					]
+				},
+				"description": "Endpoint to retrieve transaction details using the PayMob order ID. Ensure you have a valid authentication token (`AUTH_TOKEN`) and the correct PayMob order ID.\n\n**Query by PayMob Order ID**\n\n- **Endpoint:** `/api/ecommerce/orders/transaction_inquiry`\n    \n- **Method:** POST\n    \n- **Description:** Fetches transaction details using the unique PayMob order ID.\n    \n- **Parameters:**\n    \n    - `ACCEPT_ORDER_ID`: The unique identifier assigned to the transaction by PayMob."
+			},
+			"response": []
+		},
+		{
+			"name": "Transaction_inquiry_for_trx_ID",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": "Specifies that the request body is in JSON format."
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"auth_token\": \"{{AUTH_TOKEN}}\" //token obtained from step 1 Auth_API\r\n}"
+				},
+				"url": {
+					"raw": "https://accept.paymob.com/api/acceptance/transactions/{{transaction_ID}}",
+					"protocol": "https",
+					"host": [
+						"accept",
+						"paymob",
+						"com"
+					],
+					"path": [
+						"api",
+						"acceptance",
+						"transactions",
+						"{{transaction_ID}}"
+					]
+				},
+				"description": "Endpoint to retrieve transaction details using the transaction ID. Replace `{{transaction_ID}}` with the actual transaction ID you want to query. Ensure you have a valid authentication token (`AUTH_TOKEN`).\n\n**Query by PayMob Transaction ID**\n\n- **Endpoint:** `/api/acceptance/transactions/{{transaction_ID}}`\n    \n- **Method:** GET\n    \n- **Description:** Retrieves transaction details using the unique PayMob transaction ID.\n    \n- **Parameters:**\n    \n    - `transaction_ID`: The unique identifier assigned to the specific transaction by PayMob."
+			},
+			"response": []
+		}
+	]
+}
