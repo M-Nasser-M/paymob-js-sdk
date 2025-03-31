@@ -1,0 +1,33 @@
+{
+	"name": "@paymob/sdk",
+	"version": "1.0.0",
+	"module": "index.ts",
+	"type": "module",
+	"private": false,
+	"description": "Paymob Intention API v3 SDK",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"engines": {
+		"node": ">=20",
+		"bun": ">=1.2.7"
+	},
+	"scripts": {
+		"build": "bun build ./src/index.ts --outdir ./dist --target node",
+		"test": "bun test",
+		"test:coverage": "bun test --coverage",
+		"lint": "bunx @biomejs/biome check ./src",
+		"lint:fix": "bunx @biomejs/biome check --apply ./src",
+		"format": "bunx @biomejs/biome format --write ./src"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.5.3",
+		"@types/bun": "latest",
+		"valibot": "^1.0.0"
+	},
+	"peerDependencies": {
+		"typescript": "^5.0.0",
+		"valibot": "^1.0.0"
+	},
+	"files": ["dist", "LICENSE", "README.md"],
+	"trustedDependencies": ["@biomejs/biome"]
+}

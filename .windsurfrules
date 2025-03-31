@@ -1,0 +1,48 @@
+# Paymob SDK Development Rules
+
+[General]
+
+- Use Bun v1.2.7+ for package management and scripting
+- Strict TypeScript (5.0+) with ESM modules
+- SDK must target Paymob Intention API v3
+- Node.js 20+ compatibility
+- Use import Type when importing to use as type only
+
+[TypeScript]
+
+- Enable strict type checks
+- Use interfaces for API response shapes
+- Generate type declarations
+- Prefer async/await over callbacks
+
+[Testing]
+
+- 100% test coverage with Bun test
+- Test both success and error cases
+
+[HTTP Client]
+
+- Use native fetch API
+- Automatic retry for 5xx errors
+- Configurable timeout (default 10s)
+- Type-safe request/response handling
+
+[Error Handling]
+
+- Custom error classes:
+  - PaymobAPIError
+  - ConfigurationError
+  - ValidationError
+- Error wrapping for failed requests
+
+[Project Structure]
+src/
+  core/
+  resources/
+    payments/
+    authentication/
+  utils/
+  errors/
+  types/
+  test/
+    **/*.test.ts
