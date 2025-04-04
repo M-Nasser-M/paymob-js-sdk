@@ -1,5 +1,5 @@
 {
-	"name": "@paymob/sdk",
+	"name": "@paymob/sdk-eg",
 	"version": "1.0.0",
 	"module": "index.ts",
 	"type": "module",
@@ -20,14 +20,16 @@
 		"format": "bunx @biomejs/biome format --write ./src"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "1.5.3",
-		"@types/bun": "latest",
-		"valibot": "^1.0.0"
+		"@biomejs/biome": "1.9.4",
+		"@types/bun": "latest"
 	},
 	"peerDependencies": {
-		"typescript": "^5.0.0",
-		"valibot": "^1.0.0"
+		"typescript": "^5.0.0"
 	},
 	"files": ["dist", "LICENSE", "README.md"],
-	"trustedDependencies": ["@biomejs/biome"]
+	"trustedDependencies": ["@biomejs/biome"],
+	"dependencies": {
+		"ky": "^1.8.0",
+		"valibot": "^1.0.0"
+	}
 }

@@ -21,7 +21,6 @@ export type {
   VoidResponseOutput as VoidResponse,
   MotoRequestInput as MotoRequest,
   MotoResponseOutput as MotoResponse,
-  ApiErrorOutput as ApiError
 } from './types';
 
 // Export error classes
