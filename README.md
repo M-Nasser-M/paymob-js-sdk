@@ -1,6 +1,6 @@
 # Paymob SDK
 
-A TypeScript SDK for the Paymob Intention API v3, designed with strict typing and modern JavaScript practices.
+A TypeScript SDK for the Paymob API , designed with strict typing and modern JavaScript practices.
 
 ## Features
 
