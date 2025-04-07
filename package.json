@@ -1,29 +1,39 @@
 {
 	"name": "@paymob/sdk-eg",
 	"version": "1.0.0",
-	"module": "index.ts",
+	"description": "Paymob typescript SDK",
 	"type": "module",
 	"private": false,
-	"description": "Paymob Intention API v3 SDK",
-	"main": "dist/index.js",
-	"types": "dist/index.d.ts",
+	"main": "./dist/cjs/index.js",
+	"module": "./dist/esm/index.js",
+	"types": "./dist/types/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./dist/esm/index.js",
+			"require": "./dist/cjs/index.js",
+			"types": "./dist/types/index.d.ts"
+		}
+	},
 	"engines": {
 		"node": ">=20",
 		"bun": ">=1.2.7"
 	},
 	"scripts": {
-		"build": "bun build ./src/index.ts --outdir ./dist --target node",
+		"clean": "rm -rf dist",
+		"build": "npm run clean && npm run build:esm && npm run build:cjs && npm run build:types",
+		"build:esm": "bun build ./src/index.ts --outdir ./dist/esm --target node --format esm",
+		"build:cjs": "bun build ./src/index.ts --outdir ./dist/cjs --target node --format cjs",
+		"build:types": "tsc --declaration --emitDeclarationOnly --declarationDir dist/types",
 		"test": "bun test",
 		"test:coverage": "bun test --coverage",
 		"lint": "bunx @biomejs/biome check ./src",
 		"lint:fix": "bunx @biomejs/biome check --apply ./src",
-		"format": "bunx @biomejs/biome format --write ./src"
+		"format": "bunx @biomejs/biome format --write ./src",
+		"prepublishOnly": "npm run build"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
-		"@types/bun": "latest"
-	},
-	"peerDependencies": {
+		"@types/bun": "latest",
 		"typescript": "^5.0.0"
 	},
 	"files": ["dist", "LICENSE", "README.md"],
@@ -31,5 +41,12 @@
 	"dependencies": {
 		"ky": "^1.8.0",
 		"valibot": "^1.0.0"
+	},
+	"keywords": ["paymob", "payments", "api", "sdk", "typescript"],
+	"author": "",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/yourusername/paymob-sdk-eg"
 	}
 }
