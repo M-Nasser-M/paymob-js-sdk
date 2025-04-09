@@ -8,6 +8,13 @@
 - Node.js 20+ compatibility
 - Use import Type when importing to use as type only
 - Don't add comments unless code is not self-explanatory
+- Use biome for code formatting
+- Use bun for package management
+- Use bun for running scripts
+- Use bun for building
+- Use bun for testing
+- This is a typescript project
+- package should support es6 and commonjs
 
 [TypeScript]
 

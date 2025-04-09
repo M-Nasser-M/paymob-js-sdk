@@ -1,13 +1,14 @@
-import type { PaymobHTTPClient } from "../../core/client.js";
+import { getFormattedUnifiedCheckoutUrl } from "../../utils/format-checkout-url.js";
+import type { RefundResponse, VoidResponse } from "../../types/transaction.js";
+import { CreateIntentionRequestSchema } from "../../types/intention.js";
 import { DEFAULT_PAYMOB_ENDPOINTS } from "../../defaults/index.js";
+import type { PaymobConfig } from "../../types/paymob-config.js";
+import type { PaymobHTTPClient } from "../../core/client.js";
 import type {
   CreateIntentionRequest,
   CreateIntentionResponse,
 } from "../../types/intention.js";
-import type { PaymobConfig } from "../../types/paymob-config.js";
 import * as v from "valibot";
-import { CreateIntentionResponseSchema } from "../../types/intention.js";
-import { getFormattedUnifiedCheckoutUrl } from "../../utils/format-checkout-url.js";
 
 export class Payment {
   private client: PaymobHTTPClient;
@@ -21,27 +22,60 @@ export class Payment {
   public async createIntention(
     createIntentionRequest: CreateIntentionRequest
   ): Promise<CreateIntentionResponse> {
+    const validatedCreateIntentionRequest = v.parse(
+      CreateIntentionRequestSchema,
+      createIntentionRequest
+    );
+
     return this.client
       .post<CreateIntentionResponse>(DEFAULT_PAYMOB_ENDPOINTS.INTENTION, {
-        body: JSON.stringify(createIntentionRequest),
+        body: JSON.stringify(validatedCreateIntentionRequest),
       })
       .json();
   }
 
-  public async getPaymentUrl(
+  public async getPaymentUrl(client_secret: string): Promise<string> {
+    return getFormattedUnifiedCheckoutUrl(client_secret);
+  }
+
+  public async createIntentionAndGetUrl(
     createIntentionRequest: CreateIntentionRequest
   ): Promise<string> {
-    const createIntentionResponse = await this.createIntention(
+    const { client_secret } = await this.createIntention(
       createIntentionRequest
     );
+    return getFormattedUnifiedCheckoutUrl(client_secret);
+  }
 
-    const validatedCreateIntentionResponse = v.parse(
-      CreateIntentionResponseSchema,
-      createIntentionResponse
-    );
+  public async voidTransaction(transactionID: string) {
+    return this.client
+      .post<VoidResponse>(DEFAULT_PAYMOB_ENDPOINTS.PAYMENT_ACTIONS.VOID, {
+        body: JSON.stringify({
+          transaction_id: transactionID,
+        }),
+      })
+      .json();
+  }
 
-    return getFormattedUnifiedCheckoutUrl(
-      validatedCreateIntentionResponse.client_secret
-    );
+  public async refundTransaction(transactionID: string, amountCents: number) {
+    return this.client
+      .post<RefundResponse>(DEFAULT_PAYMOB_ENDPOINTS.PAYMENT_ACTIONS.REFUND, {
+        body: JSON.stringify({
+          transaction_id: transactionID,
+          amount_cents: amountCents,
+        }),
+      })
+      .json();
+  }
+
+  public async captureTransaction(transactionID: string, amountCents: number) {
+    return this.client
+      .post<RefundResponse>(DEFAULT_PAYMOB_ENDPOINTS.PAYMENT_ACTIONS.CAPTURE, {
+        body: JSON.stringify({
+          transaction_id: transactionID,
+          amount_cents: amountCents,
+        }),
+      })
+      .json();
   }
 }
