@@ -22,13 +22,13 @@ A TypeScript SDK for the Paymob API , designed with strict typing and modern Jav
 ## Installation
 
 ```bash
-bun add @paymob/sdk
+bun add @m-nasser-m/paymob-sdk-eg
 ```
 
 Or with npm:
 
 ```bash
-npm install @paymob/sdk
+npm install @m-nasser-m/paymob-sdk-eg
 ```
 
 ## Usage
@@ -36,27 +36,33 @@ npm install @paymob/sdk
 ### Initialize the SDK
 
 ```typescript
-import { Paymob } from '@paymob/sdk';
+import { Paymob } from '@m-nasser-m/paymob-sdk-eg';
+import type { PaymobConfig } from '@m-nasser-m/paymob-sdk-eg'; // Import type if needed
 
-const paymob = new Paymob({
-  secretKey: 'YOUR_SECRET_KEY',
-  publicKey: 'YOUR_PUBLIC_KEY',
-  integrationIds: ['YOUR_INTEGRATION_ID'],
-  notificationUrl: 'YOUR_NOTIFICATION_URL',
-  redirectionUrl: 'YOUR_REDIRECTION_URL',
-  // Optional configurations
-  apiBaseUrl: 'https://accept.paymob.com', // Default
-  timeout: 10000, // Default: 10 seconds
-  retryAttempts: 3, // Default: 3 attempts for 5xx errors
-});
+// Ensure environment variables are loaded or provide values directly
+const paymobConfig: PaymobConfig = {
+  PAYMOB_API_KEY: process.env.PAYMOB_API_KEY!,
+  PAYMOB_PUBLIC_KEY: process.env.PAYMOB_PUBLIC_KEY!,
+  PAYMOB_SECRET_KEY: process.env.PAYMOB_SECRET_KEY!,
+  PAYMOB_NOTIFICATION_URL: process.env.PAYMOB_NOTIFICATION_URL!,
+  PAYMOB_REDIRECTION_URL: process.env.PAYMOB_REDIRECTION_URL!
+};
+
+const paymob = new Paymob(paymobConfig);
+
+// Optional: Configure ky options if needed
+// const paymob = new Paymob(paymobConfig, { timeout: 15000 });
 ```
 
-### Create a Payment Intention
+### Create a Payment Intention & Get Checkout URL
 
 ```typescript
-const intentionResponse = await paymob.intentions.create({
+import type { CreateIntentionRequest } from '@m-nasser-m/paymob-sdk-eg';
+
+const paymentDetails: CreateIntentionRequest = {
   amount: 10000, // amount in cents
   currency: 'EGP',
+  payment_methods: [paymobConfig.PAYMOB_INTEGRATION_ID_CARD], // Specify allowed integration IDs
   items: [
     {
       name: 'Product 1',
@@ -76,91 +82,123 @@ const intentionResponse = await paymob.intentions.create({
     last_name: 'Doe',
     phone_number: '+201234567890',
     email: 'customer@example.com',
-    // Optional address details
     apartment: '123',
     street: 'Example Street',
     building: '4',
     city: 'Cairo',
-    country: 'Egypt',
+    country: 'EGY', // Use 3-letter ISO code
     floor: '5',
     state: 'Cairo'
   },
-  // Optional parameters
   extras: {
     custom_field: 'custom_value'
   },
-  special_reference: 'order-123456', //also name merchat_order_id so you can set you own order id in Paymob
-});
+  special_reference: `order-${Date.now()}` // Your internal order ID (merchant_order_id)
+};
 
-// Get client_secret from response
-const { client_secret, id } = intentionResponse;
+try {
+  // Use the combined method to create intention and get the URL directly
+  const checkoutUrl = await paymob.payment.createIntentionAndGetUrl(paymentDetails);
 
-// Generate checkout URL
-const checkoutUrl = paymob.getCheckoutUrl(client_secret);
+  console.log('Checkout URL:', checkoutUrl);
+  // Redirect the user to checkoutUrl
+
+  // OR, if you need the client_secret separately:
+  // const intentionResponse = await paymob.payment.createIntention(paymentDetails);
+  // const clientSecret = intentionResponse.client_secret;
+  // const checkoutUrl = await paymob.payment.getPaymentUrl(clientSecret);
+  // console.log('Client Secret:', clientSecret);
+  // console.log('Checkout URL:', checkoutUrl);
+
+} catch (error) {
+  console.error('Error creating payment intention:', error);
+  // Handle error appropriately
+}
 ```
 
 ### Process a Refund
 
 ```typescript
-const refundResponse = await paymob.intentions.refund({
-  transaction_id: 'TRANSACTION_ID',
-  amount_cents: 10000 // Amount to refund
-});
+// Import response type if needed
+// import type { RefundResponse } from '@m-nasser-m/paymob-sdk-eg';
+
+const transactionToRefund = 'TARGET_TRANSACTION_ID';
+const amountToRefund = 5000; // Amount in cents
+
+try {
+  const refundResponse = await paymob.payment.refundTransaction(transactionToRefund, amountToRefund);
+  console.log('Refund successful:', refundResponse);
+} catch (error) {
+  console.error('Error processing refund:', error);
+}
 ```
 
 ### Capture an Authorized Payment
 
 ```typescript
-const captureResponse = await paymob.intentions.capture({
-  transaction_id: 'TRANSACTION_ID',
-  amount_cents: 10000 // Amount to capture
-});
+// Import response type if needed
+// import type { CaptureResponse } from '@m-nasser-m/paymob-sdk-eg'; // Assuming CaptureResponse exists
+
+const transactionToCapture = 'AUTHORIZED_TRANSACTION_ID';
+const amountToCapture = 10000; // Amount in cents
+
+try {
+  const captureResponse = await paymob.payment.captureTransaction(transactionToCapture, amountToCapture);
+  console.log('Capture successful:', captureResponse);
+} catch (error) {
+  console.error('Error capturing transaction:', error);
+}
 ```
 
 ### Void a Transaction
 
 ```typescript
-const voidResponse = await paymob.intentions.void({
-  transaction_id: 'TRANSACTION_ID'
-});
+// Import response type if needed
+// import type { VoidResponse } from '@m-nasser-m/paymob-sdk-eg';
+
+const transactionToVoid = 'TRANSACTION_TO_VOID_ID';
+
+try {
+  const voidResponse = await paymob.payment.voidTransaction(transactionToVoid);
+  console.log('Void successful:', voidResponse);
+} catch (error) {
+  console.error('Error voiding transaction:', error);
+}
 ```
 
 ### MOTO Payment (Mail Order/Telephone Order)
 
+*This functionality is not currently implemented in the SDK.*
+
 ```typescript
-const motoResponse = await paymob.moto.pay({
-  source: {
-    identifier: 'CARD_TOKEN', // Obtained from save card callback
-    subtype: 'TOKEN'
-  },
-  payment_token: 'PAYMENT_KEY' // Obtained from intention
-});
+// MOTO Payment example would go here once implemented.
 ```
 
 ## Error Handling
 
-The SDK provides custom error classes for different scenarios:
+The SDK provides custom error classes (currently basic implementations):
 
 ```typescript
-import { PaymobAPIError, ConfigurationError, ValidationError } from '@paymob/sdk';
+import { PaymobAPIError, ConfigurationError, ValidationError } from '@m-nasser-m/paymob-sdk-eg';
 
 try {
-  const response = await paymob.intentions.create(/* ... */);
+  // Example: Trigger an intentional error or make a call
+  const checkoutUrl = await paymob.payment.createIntentionAndGetUrl(/* ... invalid data ... */);
 } catch (error) {
   if (error instanceof PaymobAPIError) {
-    // Handle API errors (e.g., authentication, validation)
-    console.error(`API Error ${error.statusCode}: ${error.message}`);
-    console.error('Details:', error.details);
+    // Handle API response errors
+    console.error(`API Error: ${error.message}`);
+    // TODO: Add details parsing when error structure is finalized
   } else if (error instanceof ConfigurationError) {
-    // Handle configuration issues
+    // Handle SDK configuration issues
     console.error(`Config Error: ${error.message}`);
   } else if (error instanceof ValidationError) {
-    // Handle validation issues
+    // Handle request validation issues before sending (e.g., from Valibot)
     console.error(`Validation Error: ${error.message}`);
-    console.error('Details:', error.details);
+    // You might access error.issues if using Valibot errors directly
   } else {
-    // Handle other errors
-    console.error(`Unknown Error: ${error.message}`);
+    // Handle other generic errors (e.g., network issues)
+    console.error(`Unknown Error: ${error instanceof Error ? error.message : String(error)}`);
   }
 }
 ```
