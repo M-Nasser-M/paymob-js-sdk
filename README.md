@@ -10,6 +10,8 @@ A TypeScript SDK for the Paymob API , designed with strict typing and modern Jav
 - Comprehensive error handling
 - ESM module support
 - 100% test coverage
+- subscription api is not supported yet
+- package is still in development
 
 ## Requirements
 
