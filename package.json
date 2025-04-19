@@ -1,6 +1,6 @@
 {
 	"name": "@m-nasser-m/paymob-sdk-eg",
-	"version": "0.1.5",
+	"version": "0.1.6",
 	"description": "Paymob typescript SDK",
 	"type": "module",
 	"private": false,
