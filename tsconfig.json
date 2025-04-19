@@ -13,7 +13,8 @@
 		"strictFunctionTypes": true,
 		"types": ["node"],
 		"esModuleInterop": true,
-		"noUncheckedIndexedAccess": true
+		"noUncheckedIndexedAccess": true,
+		"declaration": true
 	},
 	"exclude": ["./dist", "./src/test", "./node_modules"]
 }
