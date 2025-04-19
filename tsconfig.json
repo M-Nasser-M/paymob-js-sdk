@@ -1,20 +1,21 @@
 {
 	"compilerOptions": {
-		"rootDir": "./src",
-		"outDir": "./dist",
-		"lib": ["ES2023"],
-		"module": "node16",
-		"target": "ES2022",
-		"checkJs": false,
-		"alwaysStrict": true,
-		"noImplicitAny": true,
-		"noImplicitThis": true,
-		"strict": true,
-		"strictFunctionTypes": true,
-		"types": ["node"],
 		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"target": "es2022",
+		"allowJs": true,
+		"resolveJsonModule": true,
+		"moduleDetection": "force",
+		"isolatedModules": true,
+		"verbatimModuleSyntax": true,
+		"strict": true,
 		"noUncheckedIndexedAccess": true,
-		"declaration": true
+		"noImplicitOverride": true,
+		"module": "NodeNext",
+		"outDir": "dist",
+		"sourceMap": true,
+		"declaration": true,
+		"lib": ["es2022"]
 	},
 	"exclude": ["./dist", "./src/test", "./node_modules"]
 }
