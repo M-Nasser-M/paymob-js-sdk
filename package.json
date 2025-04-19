@@ -21,7 +21,7 @@
 	"scripts": {
 		"clean": "rm -rf dist",
 		"build:types": "tsc --emitDeclarationOnly --declaration --outDir dist/types",
-		"build": "bun run build:types && bun run scripts/build.ts",
+		"build": "bun run clean && bun run build:types && tsc -p tsconfig.cjs.json && tsc -p tsconfig.esm.json",
 		"test": "bun test",
 		"test:coverage": "bun test --coverage",
 		"lint": "bunx @biomejs/biome check ./src",
