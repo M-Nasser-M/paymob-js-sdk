@@ -9,6 +9,7 @@ async function runBuild() {
     target: "node",
     minify: true,
     sourcemap: "external",
+    packages: "bundle",
   });
 
   // Build CommonJS version
@@ -19,6 +20,7 @@ async function runBuild() {
     target: "node",
     minify: true,
     sourcemap: "external",
+    packages: "bundle",
   });
 
   // biome-ignore lint/suspicious/noConsoleLog: <explanation>
