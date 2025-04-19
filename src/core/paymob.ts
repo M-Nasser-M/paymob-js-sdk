@@ -5,7 +5,7 @@ import { TransactionInquiry } from "../resources/transaction/index.js";
 import type { PaymobConfig } from "../types/paymob-config.js";
 import { PaymobHTTPClient } from "./client.js";
 
-export default class Paymob {
+export class Paymob {
   private readonly client: PaymobHTTPClient;
   public readonly payment: Payment;
   public readonly transaction: TransactionInquiry;

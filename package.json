@@ -5,16 +5,23 @@
 	"type": "module",
 	"private": false,
 	"main": "dist/index.js",
-	"types": "dist/types/index.js",
+	"exports": {
+		"./package.json": "./package.json",
+		".": {
+			"import": "./dist/index.js",
+			"default": "./dist/index.cjs"
+		}
+	},
 	"engines": {
 		"node": ">=20",
 		"bun": ">=1.2.7"
 	},
 	"scripts": {
 		"prebuild": "rm -rf ./dist",
-		"build": "tsc ",
+		"build": "tsup",
 		"clean": "rm -rf ./node_modules/ ./dist",
 		"prepack": "bun install && bun run build",
+		"check-exports": "attw --pack .",
 		"test": "bun test",
 		"test:coverage": "bun test --coverage",
 		"lint": "bunx @biomejs/biome check ./src",
@@ -23,10 +30,12 @@
 		"prepublishOnly": "bun run build"
 	},
 	"devDependencies": {
+		"@arethetypeswrong/cli": "^0.17.4",
 		"@biomejs/biome": "1.9.4",
 		"@types/bun": "^1.2.10",
 		"@types/node": "^20",
 		"npm-run-all": "^4.1.5",
+		"tsup": "^8.4.0",
 		"typescript": "^5"
 	},
 	"files": ["dist", "LICENSE", "README.md"],

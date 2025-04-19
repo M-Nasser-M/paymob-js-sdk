@@ -3,6 +3,7 @@
 		"esModuleInterop": true,
 		"skipLibCheck": true,
 		"target": "es2022",
+		"lib": ["es2022"],
 		"allowJs": true,
 		"resolveJsonModule": true,
 		"moduleDetection": "force",
@@ -12,10 +13,7 @@
 		"noUncheckedIndexedAccess": true,
 		"noImplicitOverride": true,
 		"module": "NodeNext",
-		"outDir": "dist",
-		"sourceMap": true,
-		"declaration": true,
-		"lib": ["es2022"]
+		"noEmit": true
 	},
 	"exclude": ["./dist", "./src/test", "./node_modules"]
 }
