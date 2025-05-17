@@ -6,15 +6,15 @@ import type { PaymobConfig } from "../types/paymob-config.js";
 import { PaymobHTTPClient } from "./client.js";
 
 export class Paymob {
-  private readonly client: PaymobHTTPClient;
-  public readonly payment: Payment;
-  public readonly transaction: TransactionInquiry;
-  public readonly subscriptions: Subscriptions;
+	private readonly client: PaymobHTTPClient;
+	public readonly payment: Payment;
+	public readonly transaction: TransactionInquiry;
+	public readonly subscriptions: Subscriptions;
 
-  constructor(paymobConfig: PaymobConfig, options: Options = {}) {
-    this.client = PaymobHTTPClient(paymobConfig.PAYMOB_SECRET_KEY, options);
-    this.payment = new Payment(this.client, paymobConfig);
-    this.transaction = new TransactionInquiry(this.client, paymobConfig);
-    this.subscriptions = new Subscriptions(this.client, paymobConfig);
-  }
+	constructor(paymobConfig: PaymobConfig, options: Options = {}) {
+		this.client = PaymobHTTPClient(paymobConfig.PAYMOB_SECRET_KEY, options);
+		this.payment = new Payment(this.client, paymobConfig);
+		this.transaction = new TransactionInquiry(this.client, paymobConfig);
+		this.subscriptions = new Subscriptions(this.client, paymobConfig);
+	}
 }

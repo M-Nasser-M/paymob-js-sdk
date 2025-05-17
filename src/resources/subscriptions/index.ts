@@ -2,11 +2,11 @@ import type { PaymobHTTPClient } from "../../core/client.js";
 import type { PaymobConfig } from "../../types/paymob-config.js";
 
 export class Subscriptions {
-  private client: PaymobHTTPClient;
-  private paymobConfig: PaymobConfig;
+	private client: PaymobHTTPClient;
+	private paymobConfig: PaymobConfig;
 
-  constructor(client: PaymobHTTPClient, paymobConfig: PaymobConfig) {
-    this.client = client;
-    this.paymobConfig = paymobConfig;
-  }
+	constructor(client: PaymobHTTPClient, paymobConfig: PaymobConfig) {
+		this.client = client;
+		this.paymobConfig = paymobConfig;
+	}
 }
