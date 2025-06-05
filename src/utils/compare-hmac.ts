@@ -17,12 +17,13 @@ export const compareHMACWebhook = (
 	const parsedData = parse(WebhookResponseSchema, data);
 
 	const hasher = new CryptoHasher("sha512", hmacSecret);
-
+	
+	if(parsedData.type === "TRANSACTION") {
 	const concatenatedString =
-		`${parsedData.obj.amount_cents}` +
-		`${parsedData.obj.created_at}` +
-		`${parsedData.obj.currency}` +
-		`${parsedData.obj.error_occured}` +
+			`${parsedData.obj.amount_cents}` +
+			`${parsedData.obj.created_at}` +
+			`${parsedData.obj.currency}` +
+			`${parsedData.obj.error_occured}` +
 		`${parsedData.obj.has_parent_transaction}` +
 		`${parsedData.obj.id}` +
 		`${parsedData.obj.integration_id}` +
@@ -43,6 +44,24 @@ export const compareHMACWebhook = (
 	const hash = hasher.update(concatenatedString).digest("hex");
 
 	return hash === hmac;
+	}
+	if(parsedData.type === "TOKEN") {
+		const concatenatedString =
+			`${parsedData.obj.card_subtype}` +
+			`${parsedData.obj.created_at}` +
+			`${parsedData.obj.email}` +
+			`${parsedData.obj.id}` +
+			`${parsedData.obj.masked_pan}` +
+			`${parsedData.obj.merchant_id}` +
+			`${parsedData.obj.order_id}` +
+			`${parsedData.obj.token}`;
+
+	const hash = hasher.update(concatenatedString).digest("hex");
+
+	return hash === hmac;
+	}
+
+	return false;
 };
 
 export const compareHMACPaymentRedirect = (
