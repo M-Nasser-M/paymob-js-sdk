@@ -1,66 +1,74 @@
 {
-	"name": "@m-nasser-m/paymob-sdk-eg",
-	"version": "0.1.11",
-	"description": "Paymob typescript SDK",
-	"type": "module",
-	"private": false,
-	"main": "dist/index.js",
-	"exports": {
-		"./package.json": "./package.json",
-		".": {
-			"import": "./dist/index.js",
-			"default": "./dist/index.cjs"
-		}
-	},
-	"engines": {
-		"node": ">=20",
-		"bun": ">=1.2.7"
-	},
-	"scripts": {
-		"prebuild": "rm -rf ./dist",
-		"build": "tsup",
-		"clean": "rm -rf ./node_modules/ ./dist",
-		"prepack": "bun install && bun run build",
-		"check-exports": "attw --pack .",
-		"test": "bun test",
-		"test:coverage": "bun test --coverage",
-		"lint": "bunx @biomejs/biome check ./src",
-		"lint:fix": "bunx @biomejs/biome check --apply ./src",
-		"format": "bunx @biomejs/biome format --write ./src",
-		"prepublishOnly": "bun run build"
-	},
-	"devDependencies": {
-		"@arethetypeswrong/cli": "^0.18.1",
-		"@biomejs/biome": "1.9.4",
-		"@types/bun": "^1.2.13",
-		"@types/node": "^22",
-		"npm-run-all": "^4.1.5",
-		"tsup": "^8.5.0",
-		"typescript": "^5"
-	},
-	"files": ["dist", "LICENSE", "README.md"],
-	"trustedDependencies": ["@biomejs/biome"],
-	"dependencies": {
-		"ky": "^1.8.1",
-		"valibot": "^1.1.0"
-	},
-	"keywords": [
-		"paymob",
-		"payments",
-		"api",
-		"sdk",
-		"typescript",
-		"eg",
-		"egypt",
-		"node",
-		"esm",
-		"cjs",
-		"npm"
-	],
-	"author": "mohamed-nasser",
-	"license": "MIT",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/M-Nasser-M/paymob-js-sdk"
-	}
+  "name": "@m-nasser-m/paymob-sdk-eg",
+  "version": "0.1.11",
+  "description": "Paymob typescript SDK",
+  "type": "module",
+  "private": false,
+  "main": "dist/index.js",
+  "module": "./dist/index.js",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "import": "./dist/index.js",
+      "default": "./dist/index.cjs"
+    }
+  },
+  "sideEffects": false,
+  "engines": {
+    "node": ">=20",
+    "bun": ">=1.2.7"
+  },
+  "scripts": {
+    "prebuild": "rm -rf ./dist",
+    "build": "tsdown",
+    "clean": "rm -rf ./node_modules/ ./dist",
+    "prepack": "bun install && bun run build",
+    "check-exports": "attw --pack .",
+    "test": "bun test",
+    "test:coverage": "bun test --coverage",
+    "lint": "bunx @biomejs/biome check ./src",
+    "lint:fix": "bunx @biomejs/biome check --apply ./src",
+    "format": "bunx @biomejs/biome format --write ./src",
+    "prepublishOnly": "bun run build"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.1",
+    "@biomejs/biome": "1.9.4",
+    "@types/bun": "^1.2.13",
+    "@types/node": "^22",
+    "npm-run-all": "^4.1.5",
+    "tsdown": "^0.12.7",
+    "typescript": "^5"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "trustedDependencies": [
+    "@biomejs/biome"
+  ],
+  "dependencies": {
+    "ky": "^1.8.1",
+    "valibot": "^1.1.0"
+  },
+  "keywords": [
+    "paymob",
+    "payments",
+    "api",
+    "sdk",
+    "typescript",
+    "eg",
+    "egypt",
+    "node",
+    "esm",
+    "cjs",
+    "npm"
+  ],
+  "author": "mohamed-nasser",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/M-Nasser-M/paymob-js-sdk"
+  }
 }
