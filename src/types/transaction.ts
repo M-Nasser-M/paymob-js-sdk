@@ -1,4 +1,4 @@
-import * as v from "valibot";
+import * as z from "zod";
 import {
 	BillingDataSchema,
 	amountCents,
@@ -11,407 +11,411 @@ import {
 } from "./common.js";
 
 // --- Merchant Schema ---
-export const MerchantSchema = v.object({
+export const MerchantSchema = z.object({
 	id: integer(),
 	created_at: timestampValidation(),
-	phones: v.array(v.string()),
-	company_emails: v.array(emailValidation()),
-	company_name: v.string(),
-	state: v.string(),
-	country: v.string(),
-	city: v.string(),
-	postal_code: v.string(),
-	street: v.string(),
+	phones: z.array(z.string()),
+	company_emails: z.array(emailValidation()),
+	company_name: z.string(),
+	state: z.string(),
+	country: z.string(),
+	city: z.string(),
+	postal_code: z.string(),
+	street: z.string(),
 });
-export type Merchant = v.InferInput<typeof MerchantSchema>;
+export type Merchant = z.infer<typeof MerchantSchema>;
 
 // --- Shipping Data Schema ---
-export const ShippingDataSchema = v.object({
+export const ShippingDataSchema = z.object({
 	id: integer(),
-	first_name: v.string(),
-	last_name: v.string(),
-	street: v.string(),
-	building: v.string(),
-	floor: v.string(),
-	apartment: v.string(),
-	city: v.string(),
-	state: v.string(),
-	country: v.string(),
+	first_name: z.string(),
+	last_name: z.string(),
+	street: z.string(),
+	building: z.string(),
+	floor: z.string(),
+	apartment: z.string(),
+	city: z.string(),
+	state: z.string(),
+	country: z.string(),
 	email: emailValidation(),
-	phone_number: v.string(),
-	postal_code: v.string(),
-	extra_description: v.string(),
-	shipping_method: v.string(),
+	phone_number: z.string(),
+	postal_code: z.string(),
+	extra_description: z.string(),
+	shipping_method: z.string(),
 	order_id: integer(),
 	order: integer(),
 });
-export type ShippingData = v.InferInput<typeof ShippingDataSchema>;
+export type ShippingData = z.input<typeof ShippingDataSchema>;
 
 // --- Order Schema ---
-export const OrderSchema = v.object({
+export const OrderSchema = z.object({
 	id: integer(),
 	created_at: timestampValidation(),
-	delivery_needed: v.boolean(),
-	merchant: v.object({
+	delivery_needed: z.boolean(),
+	merchant: z.object({
 		id: integer(),
 		created_at: timestampValidation(),
-		phones: v.array(v.string()),
-		company_emails: v.array(emailValidation()),
-		company_name: v.string(),
-		state: v.string(),
-		country: v.string(),
-		city: v.string(),
-		postal_code: v.string(),
-		street: v.string(),
+		phones: z.array(z.string()),
+		company_emails: z.array(emailValidation()),
+		company_name: z.string(),
+		state: z.string(),
+		country: z.string(),
+		city: z.string(),
+		postal_code: z.string(),
+		street: z.string(),
 	}),
-	collector: v.nullable(v.unknown()),
+	collector: z.unknown().nullable(),
 	amount_cents: amountCents(),
-	shipping_data: v.nullable(ShippingDataSchema),
-	shipping_details: v.nullable(v.unknown()),
-	currency: v.string(),
-	is_payment_locked: v.boolean(),
-	is_return: v.boolean(),
-	is_cancel: v.boolean(),
-	is_returned: v.boolean(),
-	is_canceled: v.boolean(),
-	merchant_order_id: v.nullable(v.string()),
-	wallet_notification: v.nullable(v.unknown()),
+	shipping_data: ShippingDataSchema.nullable(),
+	shipping_details: z.unknown().nullable(),
+	currency: z.string(),
+	is_payment_locked: z.boolean(),
+	is_return: z.boolean(),
+	is_cancel: z.boolean(),
+	is_returned: z.boolean(),
+	is_canceled: z.boolean(),
+	merchant_order_id: z.string().nullable(),
+	wallet_notification: z.unknown().nullable(),
 	paid_amount_cents: amountCents(),
-	notify_user_with_email: v.boolean(),
-	items: v.array(v.unknown()),
-	order_url: v.string(),
+	notify_user_with_email: z.boolean(),
+	items: z.array(z.unknown()),
+	order_url: z.string(),
 	commission_fees: amountCents(),
 	delivery_fees_cents: amountCents(),
 	delivery_vat_cents: amountCents(),
-	payment_method: v.string(),
-	merchant_staff_tag: v.nullable(v.string()),
-	api_source: v.string(),
-	pickup_data: v.nullable(v.unknown()),
-	delivery_status: v.array(v.unknown()),
+	payment_method: z.string(),
+	merchant_staff_tag: z.string().nullable(),
+	api_source: z.string(),
+	pickup_data: z.unknown().nullable(),
+	delivery_status: z.array(z.unknown()),
 });
-export type Order = v.InferInput<typeof OrderSchema>;
+export type Order = z.input<typeof OrderSchema>;
 
 // --- Source Data Schema ---
-export const SourceDataSchema = v.object({
-	type: v.string(),
-	pan: v.string(),
-	sub_type: v.string(),
+export const SourceDataSchema = z.object({
+	type: z.string(),
+	pan: z.string(),
+	sub_type: z.string(),
 });
-export type SourceData = v.InferInput<typeof SourceDataSchema>;
+export type SourceData = z.input<typeof SourceDataSchema>;
 
 // --- Chargeback Schema ---
-export const ChargebackSchema = v.object({
+export const ChargebackSchema = z.object({
 	amount_cents: amountCents(),
-	currency: v.string(),
-	reason_code: v.string(),
+	currency: z.string(),
+	reason_code: z.string(),
 });
-export type Chargeback = v.InferInput<typeof ChargebackSchema>;
+export type Chargeback = z.input<typeof ChargebackSchema>;
 
 // --- Acquirer Schema ---
-export const AcquirerSchema = v.object({
-	acquirer: v.string(),
-	merchant_id: v.string(),
-	terminal_id: v.string(),
-	merchant_name: v.string(),
-	merchant_city: v.string(),
-	merchant_country: v.string(),
-	settlement_amount: v.string(),
-	settlement_currency: v.string(),
-	transaction_id: v.string(),
-	auth_code: v.string(),
-	reference_number: v.string(),
-	receipt_no: v.string(),
-	batch_no: v.string(),
-	message: v.string(),
-	response_code: v.string(),
-	pos_entry_mode: v.string(),
-	card_data: v.string(),
-	acq_response_code: v.string(),
-	avs_acq_response_code: v.string(),
-	eci: v.string(),
-	cavv: v.string(),
-	xid: v.string(),
-	network: v.string(),
-	card_type: v.string(),
-	authentication_3ds: v.string(),
-	transaction_status: v.string(),
-	transaction_status_reason: v.string(),
-	transaction_status_info: v.string(),
-	transaction_status_details: v.string(),
-	transaction_status_details_reason: v.string(),
-	transaction_status_details_info: v.string(),
+export const AcquirerSchema = z.object({
+	acquirer: z.string(),
+	merchant_id: z.string(),
+	terminal_id: z.string(),
+	merchant_name: z.string(),
+	merchant_city: z.string(),
+	merchant_country: z.string(),
+	settlement_amount: z.string(),
+	settlement_currency: z.string(),
+	transaction_id: z.string(),
+	auth_code: z.string(),
+	reference_number: z.string(),
+	receipt_no: z.string(),
+	batch_no: z.string(),
+	message: z.string(),
+	response_code: z.string(),
+	pos_entry_mode: z.string(),
+	card_data: z.string(),
+	acq_response_code: z.string(),
+	avs_acq_response_code: z.string(),
+	eci: z.string(),
+	cavv: z.string(),
+	xid: z.string(),
+	network: z.string(),
+	card_type: z.string(),
+	authentication_3ds: z.string(),
+	transaction_status: z.string(),
+	transaction_status_reason: z.string(),
+	transaction_status_info: z.string(),
+	transaction_status_details: z.string(),
+	transaction_status_details_reason: z.string(),
+	transaction_status_details_info: z.string(),
 });
-export type Acquirer = v.InferInput<typeof AcquirerSchema>;
+export type Acquirer = z.input<typeof AcquirerSchema>;
 
 // --- Base MIGS Transaction Schema ---
-export const BaseMigsTransactionSchema = v.object({
-	id: v.string(),
+export const BaseMigsTransactionSchema = z.object({
+	id: z.string(),
 	amount: amountCents(),
-	currency: v.string(),
-	merchant: v.string(),
-	terminal: v.string(),
-	type: v.string(),
+	currency: z.string(),
+	merchant: z.string(),
+	terminal: z.string(),
+	type: z.string(),
 });
-export type BaseMigsTransaction = v.InferInput<typeof BaseMigsTransactionSchema>;
+export type BaseMigsTransaction = z.input<typeof BaseMigsTransactionSchema>;
 
-export const BaseMigsOrderSchema = v.object({
+export const BaseMigsOrderSchema = z.object({
 	amount: amountCents(),
 	chargeback: ChargebackSchema,
-	creationTime: v.string(),
-	currency: v.string(),
-	id: v.string(),
-	merchantId: v.string(),
-	merchantOrderId: v.string(),
-	merchantTransactionId: v.string(),
-	status: v.string(),
-	terminalId: v.string(),
-	totalAuthorizedAmount: v.string(),
-	totalCapturedAmount: v.string(),
-	totalRefundedAmount: v.string(),
+	creationTime: z.string(),
+	currency: z.string(),
+	id: z.string(),
+	merchantId: z.string(),
+	merchantOrderId: z.string(),
+	merchantTransactionId: z.string(),
+	status: z.string(),
+	terminalId: z.string(),
+	totalAuthorizedAmount: z.string(),
+	totalCapturedAmount: z.string(),
+	totalRefundedAmount: z.string(),
 	transaction: BaseMigsTransactionSchema,
 });
-export type BaseMigsOrder = v.InferInput<typeof BaseMigsOrderSchema>;
+export type BaseMigsOrder = z.input<typeof BaseMigsOrderSchema>;
 
 // --- Base Transaction Data Schema ---
-export const BaseTransactionDataSchema = v.object({
+export const BaseTransactionDataSchema = z.object({
 	order: OrderSchema,
 	created_at: timestampValidation(),
-	transaction_processed_callback_responses: v.array(v.unknown()),
-	currency: v.string(),
+	transaction_processed_callback_responses: z.array(z.unknown()),
+	currency: z.string(),
 	source_data: SourceDataSchema,
-	api_source: v.string(),
-	is_void: v.boolean(),
-	is_refund: v.boolean(),
-	is_capture: v.boolean(),
-	is_standalone_payment: v.boolean(),
-	payment_key_claims: v.nullable(v.unknown()),
-	error_occured: v.boolean(),
-	is_live: v.boolean(),
-	other_endpoint_reference: v.nullable(v.unknown()),
+	api_source: z.string(),
+	is_void: z.boolean(),
+	is_refund: z.boolean(),
+	is_capture: z.boolean(),
+	is_standalone_payment: z.boolean(),
+	payment_key_claims: z.unknown().nullable(),
+	error_occured: z.boolean(),
+	is_live: z.boolean(),
+	other_endpoint_reference: z.unknown().nullable(),
 	refunded_amount_cents: amountCents(),
 	source_id: integer(),
-	is_captured: v.boolean(),
+	is_captured: z.boolean(),
 	captured_amount: amountCents(),
-	merchant_staff_tag: v.nullable(v.string()),
+	merchant_staff_tag: z.string().nullable(),
 	updated_at: timestampValidation(),
-	is_settled: v.boolean(),
-	bill_balanced: v.boolean(),
-	is_bill: v.boolean(),
+	is_settled: z.boolean(),
+	bill_balanced: z.boolean(),
+	is_bill: z.boolean(),
 	owner: integer(),
-	parent_transaction: v.nullable(v.unknown()),
-	redirect_url: v.nullable(v.string()),
+	parent_transaction: z.unknown().nullable(),
+	redirect_url: z.string().nullable(),
 	merchant: MerchantSchema,
-	merchant_external_link: v.nullable(v.string()),
+	merchant_external_link: z.string().nullable(),
 	acquirer: AcquirerSchema,
-	terminal_id: v.nullable(v.unknown()),
-	installment: v.nullable(v.unknown()),
+	terminal_id: z.unknown().nullable(),
+	installment: z.unknown().nullable(),
 	order_id: integer(),
-	hmac: v.string(),
-	use_redirection: v.boolean(),
-	rrn: v.string(),
+	hmac: z.string(),
+	use_redirection: z.boolean(),
+	rrn: z.string(),
 	migs_order: BaseMigsOrderSchema,
 	integration_id: integer(),
-	klass: v.string(),
-	created_by: v.string(),
-	gateway_source_data: v.nullable(v.unknown()),
-	secure_hash: v.string(),
-	avs_result_code: v.string(),
-	avs_acq_response_code: v.string(),
-	acs_eci: v.string(),
+	klass: z.string(),
+	created_by: z.string(),
+	gateway_source_data: z.unknown().nullable(),
+	secure_hash: z.string(),
+	avs_result_code: z.string(),
+	avs_acq_response_code: z.string(),
+	acs_eci: z.string(),
 });
-export type BaseTransactionData = v.InferInput<typeof BaseTransactionDataSchema>;
+export type BaseTransactionData = z.input<typeof BaseTransactionDataSchema>;
 
-export const BaseTransactionResponseSchema = v.object({
+export const BaseTransactionResponseSchema = z.object({
 	id: integer(),
-	pending: v.boolean(),
+	pending: z.boolean(),
 	amount_cents: amountCents(),
-	success: v.boolean(),
-	is_auth: v.boolean(),
-	is_capture: v.boolean(),
-	is_standalone_payment: v.boolean(),
-	is_void: v.boolean(),
-	is_refund: v.boolean(),
-	is_voided: v.boolean(),
-	is_refunded: v.boolean(),
-	is_3d_secure: v.boolean(),
+	success: z.boolean(),
+	is_auth: z.boolean(),
+	is_capture: z.boolean(),
+	is_standalone_payment: z.boolean(),
+	is_void: z.boolean(),
+	is_refund: z.boolean(),
+	is_voided: z.boolean(),
+	is_refunded: z.boolean(),
+	is_3d_secure: z.boolean(),
 	integration_id: integer(),
 	profile_id: integer(),
-	has_parent_transaction: v.boolean(),
+	has_parent_transaction: z.boolean(),
 	order: OrderSchema,
 	created_at: timestampValidation(),
-	transaction_processed_callback_responses: v.array(v.unknown()),
-	currency: v.string(),
+	transaction_processed_callback_responses: z.array(z.unknown()),
+	currency: z.string(),
 	source_data: SourceDataSchema,
-	api_source: v.string(),
-	terminal_id: v.nullable(v.unknown()),
+	api_source: z.string(),
+	terminal_id: z.unknown().nullable(),
 	merchant_commission: integer(),
-	installment: v.nullable(v.unknown()),
-	error_occured: v.boolean(),
+	installment: z.unknown().nullable(),
+	error_occured: z.boolean(),
 	refunded_amount_cents: amountCents(),
 	captured_amount: amountCents(),
 	updated_at: timestampValidation(),
-	is_settled: v.boolean(),
-	bill_balanced: v.boolean(),
-	is_bill: v.boolean(),
+	is_settled: z.boolean(),
+	bill_balanced: z.boolean(),
+	is_bill: z.boolean(),
 	owner: integer(),
 	parent_transaction: integer(),
 });
-export type BaseTransactionResponse = v.InferInput<typeof BaseTransactionResponseSchema>;
+export type BaseTransactionResponse = z.input<typeof BaseTransactionResponseSchema>;
 
 // Transaction operation request schemas
-export const RefundRequestSchema = v.object({
+export const RefundRequestSchema = z.object({
 	transaction_id: integer(),
 	amount_cents: positiveInteger(), // Must refund at least 1 cent
+	reason: z.string().optional(),
 });
-export type RefundRequest = v.InferInput<typeof RefundRequestSchema>;
+export type RefundRequest = z.input<typeof RefundRequestSchema>;
 
-export const CaptureRequestSchema = v.object({
+export const CaptureRequestSchema = z.object({
 	transaction_id: integer(),
 	amount_cents: positiveInteger(), // Must capture at least 1 cent
 });
-export type CaptureRequest = v.InferInput<typeof CaptureRequestSchema>;
+export type CaptureRequest = z.input<typeof CaptureRequestSchema>;
 
-export const VoidRequestSchema = v.object({
+export const VoidRequestSchema = z.object({
 	transaction_id: integer(),
 });
-export type VoidRequest = v.InferInput<typeof VoidRequestSchema>;
+export type VoidRequest = z.input<typeof VoidRequestSchema>;
 
-export const TransactionInquiryRequestSchema = v.object({
+export const TransactionInquiryRequestSchema = z.object({
 	transaction_id: integer(),
 });
-export type TransactionInquiryRequest = v.InferInput<typeof TransactionInquiryRequestSchema>;
+export type TransactionInquiryRequest = z.input<typeof TransactionInquiryRequestSchema>;
 
 // Transaction operation response schemas
 // Refund Transaction Data Schema
-export const RefundTransactionDataSchema = v.object({
-	...BaseTransactionDataSchema.entries,
+export const RefundTransactionDataSchema = z.object({
+	...BaseTransactionDataSchema.shape,
 	transaction_id: integer(),
+	parent_id: integer(),
 });
-export type RefundTransactionData = v.InferInput<typeof RefundTransactionDataSchema>;
+export type RefundTransactionData = z.input<typeof RefundTransactionDataSchema>;
 
 // Capture Transaction Data Schema
-export const CaptureTransactionDataSchema = v.object({
-	...BaseTransactionDataSchema.entries,
+export const CaptureTransactionDataSchema = z.object({
+	...BaseTransactionDataSchema.shape,
 	transaction_id: integer(),
+	parent_id: integer(),
 });
-export type CaptureTransactionData = v.InferInput<typeof CaptureTransactionDataSchema>;
+export type CaptureTransactionData = z.input<typeof CaptureTransactionDataSchema>;
 
 // Void Transaction Data Schema
-export const VoidTransactionDataSchema = v.object({
-	...BaseTransactionDataSchema.entries,
+export const VoidTransactionDataSchema = z.object({
+	...BaseTransactionDataSchema.shape,
 	transaction_id: integer(),
+	parent_id: integer(),
 });
-export type VoidTransactionData = v.InferInput<typeof VoidTransactionDataSchema>;
+export type VoidTransactionData = z.input<typeof VoidTransactionDataSchema>;
 
 // Payment Transaction Data Schema
-const PaymentMigsOrderSchema = v.object({
-	...BaseMigsOrderSchema.entries,
-	acceptPartialAmount: v.boolean(),
-	authenticationStatus: v.string(),
-	status: v.string(),
-	totalAuthorizedAmount: v.nullable(v.union([integer(), v.null()])),
-	totalCapturedAmount: v.nullable(v.union([integer(), v.null()])),
+const PaymentMigsOrderSchema = z.object({
+	...BaseMigsOrderSchema.shape,
+	acceptPartialAmount: z.boolean(),
+	authenticationStatus: z.string(),
+	status: z.string(),
+	totalAuthorizedAmount: z.union([integer(), z.null()]).nullable(),
+	totalCapturedAmount: z.union([integer(), z.null()]).nullable(),
 });
 
-const PaymentMigsTransactionSchema = v.object({
-	...BaseMigsTransactionSchema.entries,
-	authenticationStatus: v.string(),
-	authorizationResponse: v.object({
-		stan: v.string(),
-		authorizationCode: v.string(),
-		responseCode: v.string(),
-		responseMessage: v.string(),
+const PaymentMigsTransactionSchema = z.object({
+	...BaseMigsTransactionSchema.shape,
+	authenticationStatus: z.string(),
+	authorizationResponse: z.object({
+		stan: z.string(),
+		authorizationCode: z.string(),
+		responseCode: z.string(),
+		responseMessage: z.string(),
 	}),
-	receipt: v.string(),
-	type: v.literal("PAYMENT"),
-	status: v.string(),
+	receipt: z.string(),
+	type: z.literal("PAYMENT"),
+	status: z.string(),
 });
 
-export const PaymentTransactionDataSchema = v.object({
-	...BaseTransactionDataSchema.entries,
+export const PaymentTransactionDataSchema = z.object({
+	...BaseTransactionDataSchema.shape,
 	transaction_id: integer(),
 	migs_order: PaymentMigsOrderSchema,
 	migs_transaction: PaymentMigsTransactionSchema,
 });
-export type PaymentTransactionData = v.InferInput<typeof PaymentTransactionDataSchema>;
-
+export type PaymentTransactionData = z.input<typeof PaymentTransactionDataSchema>;
 // Payment Key Claims Schema
-export const BillingDataClaimsSchema = v.object({
-	apartment: v.string(),
+export const BillingDataClaimsSchema = z.object({
+	apartment: z.string(),
 	email: emailValidation(),
-	floor: v.string(),
-	first_name: v.string(),
-	street: v.string(),
-	building: v.string(),
-	phone_number: v.string(),
-	shipping_method: v.string(),
-	postal_code: v.string(),
-	city: v.string(),
-	country: v.string(),
-	last_name: v.string(),
-	state: v.string(),
+	floor: z.string(),
+	first_name: z.string(),
+	street: z.string(),
+	building: z.string(),
+	phone_number: z.string(),
+	shipping_method: z.string(),
+	postal_code: z.string(),
+	city: z.string(),
+	country: z.string(),
+	last_name: z.string(),
+	state: z.string(),
 });
+export type BillingDataClaims = z.infer<typeof BillingDataClaimsSchema>;
 
-export const PaymentKeyClaimsSchema = v.object({
+export const PaymentKeyClaimsSchema = z.object({
 	user_id: integer(),
 	amount_cents: amountCents(),
-	currency: v.string(),
+	currency: z.string(),
 	integration_id: integer(),
 	order_id: integer(),
 	billing_data: BillingDataClaimsSchema,
-	lock_order_when_paid: v.boolean(),
-	extra: v.looseObject({}),
-	notification_url: v.string(),
-	redirection_url: v.string(),
-	single_payment_attempt: v.boolean(),
+	lock_order_when_paid: z.boolean(),
+	extra: z.object({}).passthrough(),
+	notification_url: z.string(),
+	redirection_url: z.string(),
+	single_payment_attempt: z.boolean(),
 	exp: integer(),
-	pmk_ip: v.string(),
+	pmk_ip: z.string(),
 });
-export type PaymentKeyClaims = v.InferInput<typeof PaymentKeyClaimsSchema>;
+export type PaymentKeyClaims = z.input<typeof PaymentKeyClaimsSchema>;
 
 /**
  * Detailed schema for Refund Transaction Response based on Paymob API.
  */
-export const RefundResponseSchema = v.object({
-	...BaseTransactionResponseSchema.entries,
-	is_refund: v.literal(true),
+export const RefundResponseSchema = z.object({
+	...BaseTransactionResponseSchema.shape,
+	is_refund: z.literal(true),
 	data: RefundTransactionDataSchema,
 });
-export type RefundResponse = v.InferInput<typeof RefundResponseSchema>;
+export type RefundResponse = z.input<typeof RefundResponseSchema>;
 
 /**
  * Detailed schema for Capture Transaction Response based on Paymob API.
  */
-export const CaptureResponseSchema = v.object({
-	...BaseTransactionResponseSchema.entries,
-	is_capture: v.literal(true),
-	is_void: v.literal(false),
-	is_refund: v.literal(false),
+export const CaptureResponseSchema = z.object({
+	...BaseTransactionResponseSchema.shape,
+	is_capture: z.literal(true),
+	is_void: z.literal(false),
+	is_refund: z.literal(false),
 	data: CaptureTransactionDataSchema,
 });
-export type CaptureResponse = v.InferInput<typeof CaptureResponseSchema>;
+export type CaptureResponse = z.input<typeof CaptureResponseSchema>;
 
 /**
  * Detailed schema for Void Transaction Response based on Paymob API.
  */
-export const VoidResponseSchema = v.object({
-	...BaseTransactionResponseSchema.entries,
-	is_void: v.literal(true),
-	is_refund: v.literal(false),
+export const VoidResponseSchema = z.object({
+	...BaseTransactionResponseSchema.shape,
+	is_void: z.literal(true),
+	is_refund: z.literal(false),
 	data: VoidTransactionDataSchema,
 });
-export type VoidResponse = v.InferInput<typeof VoidResponseSchema>;
+export type VoidResponse = z.input<typeof VoidResponseSchema>;
 
 /**
  * Schema for retrieving a transaction response from Paymob API.
  */
-export const TransactionResponseSchema = v.object({
-	...BaseTransactionResponseSchema.entries,
-	is_standalone_payment: v.boolean(),
-	has_parent_transaction: v.boolean(),
+export const TransactionResponseSchema = z.object({
+	...BaseTransactionResponseSchema.shape,
+	is_standalone_payment: z.boolean(),
+	has_parent_transaction: z.boolean(),
 	data: PaymentTransactionDataSchema,
-	payment_key_claims: v.optional(PaymentKeyClaimsSchema),
-	parent_transaction: v.optional(integer()),
-	unique_ref: v.string(),
+	payment_key_claims: PaymentKeyClaimsSchema.optional(),
+	parent_transaction: integer().optional(),
+	unique_ref: z.string(),
 });
-export type TransactionResponse = v.InferInput<typeof TransactionResponseSchema>;
+export type TransactionResponse = z.input<typeof TransactionResponseSchema>;

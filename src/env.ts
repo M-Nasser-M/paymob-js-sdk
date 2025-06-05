@@ -1,26 +1,24 @@
-import * as v from "valibot";
+import { z } from "zod";
 
-const ENVSchema = v.object({
-	MOBILE_WALLET_INTEGERATION_ID: v.pipe(
-		v.string(),
-		v.transform((input) => Number(input)),
-		v.number(),
-	),
-	CARD_INTEGERATION_ID: v.pipe(
-		v.string(),
-		v.transform((input) => Number(input)),
-		v.number(),
-	),
-	PAYMOB_API_KEY: v.string(),
-	PAYMOB_PUBLIC_KEY: v.string(),
-	PAYMOB_SECRET_KEY: v.string(),
-	PAYMOB_NOTIFICATION_URL: v.pipe(v.string(), v.url()),
-	PAYMOB_REDIRECTION_URL: v.pipe(v.string(), v.url()),
-	PAYMOB_HMAC_SECRET: v.string(),
+const ENVSchema = z.object({
+	MOBILE_WALLET_INTEGERATION_ID: z
+		.string()
+		.transform(Number)
+		.pipe(z.number()),
+	CARD_INTEGERATION_ID: z
+		.string()
+		.transform(Number)
+		.pipe(z.number()),
+	PAYMOB_API_KEY: z.string(),
+	PAYMOB_PUBLIC_KEY: z.string(),
+	PAYMOB_SECRET_KEY: z.string(),
+	PAYMOB_NOTIFICATION_URL: z.string().url(),
+	PAYMOB_REDIRECTION_URL: z.string().url(),
+	PAYMOB_HMAC_SECRET: z.string(),
 });
 
 const env = process.env;
 
-const envResult = v.parse(ENVSchema, env);
+const envResult = ENVSchema.parse(env);
 
 export const ENV = envResult;

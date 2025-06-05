@@ -1,33 +1,33 @@
-import * as v from "valibot";
+import * as z from "zod";
 import { emailValidation, integer } from "./common.js";
 
-export const AuthApiKeyRequestSchema = v.object({
-	api_key: v.string(),
+export const AuthApiKeyRequestSchema = z.object({
+	api_key: z.string(),
 });
-export type AuthApiKeyRequest = v.InferInput<typeof AuthApiKeyRequestSchema>;
+export type AuthApiKeyRequest = z.infer<typeof AuthApiKeyRequestSchema>;
 
-export const AuthUsernamePasswordRequestSchema = v.object({
-	username: v.string(),
-	password: v.string(),
-	expiration: v.optional(integer(0)), // Optional expiration time in seconds
+export const AuthUsernamePasswordRequestSchema = z.object({
+	username: z.string(),
+	password: z.string(),
+	expiration: integer(0).optional(), // Optional expiration time in seconds
 });
-export type AuthUsernamePasswordRequest = v.InferInput<typeof AuthUsernamePasswordRequestSchema>;
+export type AuthUsernamePasswordRequest = z.infer<typeof AuthUsernamePasswordRequestSchema>;
 
-export const AuthProfileSchema = v.object({
+export const AuthProfileSchema = z.object({
 	id: integer(),
-	user: v.object({
+	user: z.object({
 		id: integer(),
-		username: v.string(),
-		first_name: v.string(),
-		last_name: v.string(),
+		username: z.string(),
+		first_name: z.string(),
+		last_name: z.string(),
 		email: emailValidation(),
 	}),
 });
-export type AuthProfile = v.InferInput<typeof AuthProfileSchema>;
+export type AuthProfile = z.infer<typeof AuthProfileSchema>;
 
-export const AuthResponseSchema = v.object({
-	token: v.string(),
+export const AuthResponseSchema = z.object({
+	token: z.string(),
 	profile: AuthProfileSchema,
 });
 
-export type AuthResponse = v.InferInput<typeof AuthResponseSchema>;
+export type AuthResponse = z.infer<typeof AuthResponseSchema>;

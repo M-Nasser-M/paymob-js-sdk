@@ -2,7 +2,7 @@
  * Common schemas and validation patterns for the Paymob SDK
  * Contains reusable validation patterns and common schema structures
  */
-import * as v from "valibot";
+import * as z from "zod";
 
 // --- Common Validation Patterns ---
 
@@ -11,124 +11,119 @@ import * as v from "valibot";
  * @param min Optional minimum value
  */
 export const integer = (min?: number) => {
-	return min !== undefined
-		? v.pipe(v.number(), v.integer(), v.minValue(min))
-		: v.pipe(v.number(), v.integer());
+	const schema = z.number().int();
+	return min !== undefined ? schema.min(min) : schema;
 };
 
 /**
  * Positive integer validation (value >= 1)
  */
-export const positiveInteger = () => integer(1);
+export const positiveInteger = () => z.number().int().positive();
 
 /**
  * Non-negative integer validation (value >= 0)
  */
-export const nonNegativeInteger = () => integer(0);
+export const nonNegativeInteger = () => z.number().int().nonnegative();
 
 /**
  * Amount in cents validation (non-negative integer)
  */
 export const amountCents = () => {
-	return v.pipe(
-		nonNegativeInteger(),
-		v.custom((value) => Number.isInteger(value), "Amount must be in cents (integer)"),
-	);
+	return z.number().int().nonnegative();
 };
 
 /**
  * URL validation pipe
  */
-export const urlValidation = () => v.pipe(v.string(), v.url());
+export const urlValidation = () => z.string().url();
 
 /**
  * Email validation pipe
  */
-export const emailValidation = () => v.pipe(v.string(), v.email());
+export const emailValidation = () => z.string().email();
 
 /**
  * Timestamp validation pipe
  */
-export const timestampValidation = () => v.pipe(v.string(), v.isoTimestamp());
+export const timestampValidation = () => z.string().datetime();
 
 // --- Common Base Schemas ---
 
 /**
  * Schema for billing data
  */
-export const BillingDataSchema = v.object({
-	apartment: v.string(),
-	first_name: v.string(),
-	last_name: v.string(),
-	street: v.string(),
-	building: v.string(),
-	phone_number: v.string(),
-	city: v.string(),
-	country: v.string(),
+export const BillingDataSchema = z.object({
+	apartment: z.string(),
+	first_name: z.string(),
+	last_name: z.string(),
+	street: z.string(),
+	building: z.string(),
+	phone_number: z.string(),
+	city: z.string(),
+	country: z.string(),
 	email: emailValidation(),
-	floor: v.string(),
-	state: v.string(),
+	floor: z.string(),
+	state: z.string(),
 });
-export type BillingData = v.InferInput<typeof BillingDataSchema>;
+export type BillingData = z.infer<typeof BillingDataSchema>;
 
 /**
  * Schema for order items
  */
-export const ItemSchema = v.object({
-	name: v.string(),
+export const ItemSchema = z.object({
+	name: z.string(),
 	amount_cents: amountCents(),
-	description: v.string(),
+	description: z.string(),
 	quantity: positiveInteger(),
 });
-export type Item = v.InferInput<typeof ItemSchema>;
+export type Item = z.infer<typeof ItemSchema>;
 
 /**
  * Schema for payment methods
  */
-export const PaymentMethodsSchema = v.pipe(
-	v.array(v.union([v.number(), v.string()])),
-	v.check((arr) => arr.length > 0, "At least one payment method ID is required."),
-);
-export type PaymentMethods = v.InferInput<typeof PaymentMethodsSchema>;
+export const PaymentMethodsSchema = z
+	.array(z.union([z.number(), z.string()]))
+	.refine((arr) => arr.length > 0, { message: "At least one payment method ID is required." });
+export type PaymentMethods = z.infer<typeof PaymentMethodsSchema>;
 
 /**
  * Base schema for API responses with ID and timestamps
  */
-export const BaseResourceSchema = v.object({
-	id: v.union([v.string(), integer()]),
+export const BaseResourceSchema = z.object({
+	id: z.union([z.string(), integer()]),
 	created_at: timestampValidation(),
-	updated_at: v.optional(timestampValidation()),
+	updated_at: timestampValidation().optional(),
 });
-export type BaseResource = v.InferInput<typeof BaseResourceSchema>;
+export type BaseResource = z.infer<typeof BaseResourceSchema>;
 
 /**
  * Schema for customer information
  */
-export const CustomerSchema = v.object({
-	first_name: v.optional(v.string()),
-	last_name: v.optional(v.string()),
-	email: v.optional(emailValidation()),
-	phone_number: v.optional(v.string()),
+export const CustomerSchema = z.object({
+	first_name: z.string().optional(),
+	last_name: z.string().optional(),
+	email: emailValidation().optional(),
+	phone_number: z.string().optional(),
 });
-export type Customer = v.InferInput<typeof CustomerSchema>;
+export type Customer = z.infer<typeof CustomerSchema>;
 
 /**
  * Schema for address information
  */
-export const AddressSchema = v.object({
-	street: v.optional(v.string()),
-	building: v.optional(v.string()),
-	floor: v.optional(v.string()),
-	apartment: v.optional(v.string()),
-	city: v.optional(v.string()),
-	state: v.optional(v.string()),
-	country: v.optional(v.string()),
-	postal_code: v.optional(v.string()),
+export const AddressSchema = z.object({
+	street: z.string().optional(),
+	building: z.string().optional(),
+	floor: z.string().optional(),
+	apartment: z.string().optional(),
+	city: z.string().optional(),
+	state: z.string().optional(),
+	country: z.string().optional(),
+	postal_code: z.string().optional(),
 });
-export type Address = v.InferInput<typeof AddressSchema>;
+export type Address = z.infer<typeof AddressSchema>;
 
 /**
  * Schema for metadata
  */
-export const MetadataSchema = v.record(v.string(), v.unknown());
-export type Metadata = v.InferInput<typeof MetadataSchema>;
+export const MetadataSchema = z.record(z.string(), z.unknown());
+export type Metadata = z.infer<typeof MetadataSchema>;

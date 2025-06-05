@@ -1,91 +1,89 @@
-import * as v from "valibot";
+import * as z from "zod";
 
-const TransactionObjectSchema = v.object({
-	id: v.number(),
-	pending: v.boolean(),
-	amount_cents: v.number(),
-	success: v.boolean(),
-	is_auth: v.boolean(),
-	is_capture: v.boolean(),
-	is_standalone_payment: v.boolean(),
-	is_voided: v.boolean(),
-	is_refunded: v.boolean(),
-	is_3d_secure: v.boolean(),
-	integration_id: v.number(),
-	has_parent_transaction: v.boolean(),
-	created_at: v.string(),
-	currency: v.string(),
-	error_occured: v.boolean(),
-	order: v.object({
-		id: v.number(),
+const TransactionObjectSchema = z.object({
+	id: z.number(),
+	pending: z.boolean(),
+	amount_cents: z.number(),
+	success: z.boolean(),
+	is_auth: z.boolean(),
+	is_capture: z.boolean(),
+	is_standalone_payment: z.boolean(),
+	is_voided: z.boolean(),
+	is_refunded: z.boolean(),
+	is_3d_secure: z.boolean(),
+	integration_id: z.number(),
+	has_parent_transaction: z.boolean(),
+	created_at: z.string(),
+	currency: z.string(),
+	error_occured: z.boolean(),
+	order: z.object({
+		id: z.number(),
 	}),
-	owner: v.number(),
-	source_data: v.object({
-		pan: v.string(),
-		type: v.string(),
-		sub_type: v.string(),
+	owner: z.number(),
+	source_data: z.object({
+		pan: z.string(),
+		type: z.string(),
+		sub_type: z.string(),
 	}),
 });
 
-const TokenObjectSchema = v.object({
-	id: v.number(),
-	token: v.string(),
-	masked_pan: v.string(),
-	merchant_id: v.number(),
-	card_subtype: v.string(),
-	created_at: v.string(),
-	email: v.string(),
-	order_id: v.string(),
-	user_added: v.boolean(),
-	next_payment_intention: v.string(),
+const TokenObjectSchema = z.object({
+	id: z.number(),
+	token: z.string(),
+	masked_pan: z.string(),
+	merchant_id: z.number(),
+	card_subtype: z.string(),
+	created_at: z.string(),
+	email: z.string(),
+	order_id: z.string(),
+	user_added: z.boolean(),
+	next_payment_intention: z.string(),
 });
 
-export const WebhookResponseSchema = v.union([
-	v.object({
-		type: v.literal("TRANSACTION"),
+export const WebhookResponseSchema = z.discriminatedUnion("type", [
+	z.object({
+		type: z.literal("TRANSACTION"),
 		obj: TransactionObjectSchema,
 	}),
-	v.object({
-		type: v.literal("TOKEN"),
+	z.object({
+		type: z.literal("TOKEN"),
 		obj: TokenObjectSchema,
 	}),
 ]);
 
+export type WebhookResponse = z.infer<typeof WebhookResponseSchema>;
 
-export type WebhookResponse = v.InferOutput<typeof WebhookResponseSchema>;
-
-export const paymentRedirectResponseSchema = v.pipe(
-	v.object({
-		"https://accept.paymobsolutions.com/api/acceptance/post_pay?id": v.number(),
-		pending: v.boolean(),
-		amount_cents: v.number(),
-		success: v.boolean(),
-		is_auth: v.boolean(),
-		is_capture: v.boolean(),
-		is_standalone_payment: v.boolean(),
-		is_voided: v.boolean(),
-		is_refunded: v.boolean(),
-		is_3d_secure: v.boolean(),
-		integration_id: v.number(),
-		has_parent_transaction: v.boolean(),
-		order: v.number(),
-		created_at: v.string(),
-		currency: v.string(),
-		error_occured: v.boolean(),
-		owner: v.number(),
-		"source_data.pan": v.string(),
-		"source_data.type": v.string(),
-		"source_data.sub_type": v.string(),
-		txn_response_code: v.number(),
-		hmac: v.string(),
-	}),
-	v.transform((data) => {
+export const paymentRedirectResponseSchema = z
+	.object({
+		"https://accept.paymobsolutions.com/api/acceptance/post_pay?id": z.number(),
+		pending: z.boolean(),
+		amount_cents: z.number(),
+		success: z.boolean(),
+		is_auth: z.boolean(),
+		is_capture: z.boolean(),
+		is_standalone_payment: z.boolean(),
+		is_voided: z.boolean(),
+		is_refunded: z.boolean(),
+		is_3d_secure: z.boolean(),
+		integration_id: z.number(),
+		has_parent_transaction: z.boolean(),
+		order: z.number(),
+		created_at: z.string(),
+		currency: z.string(),
+		error_occured: z.boolean(),
+		owner: z.number(),
+		"source_data.pan": z.string(),
+		"source_data.type": z.string(),
+		"source_data.sub_type": z.string(),
+		txn_response_code: z.number(),
+		hmac: z.string(),
+	})
+	.transform((data) => {
 		return {
 			...data,
 			id: data["https://accept.paymobsolutions.com/api/acceptance/post_pay?id"],
 		};
-	}),
-);
+	});
 
-export type PaymentRedirectResponseInput = v.InferInput<typeof paymentRedirectResponseSchema>;
-export type PaymentRedirectResponseOutput = v.InferOutput<typeof paymentRedirectResponseSchema>;
+export type PaymentRedirectResponseInput = z.input<typeof paymentRedirectResponseSchema>;
+export type PaymentRedirectResponseOutput = z.output<typeof paymentRedirectResponseSchema>;

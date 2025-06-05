@@ -1,4 +1,4 @@
-import * as v from "valibot";
+import { z } from "zod";
 import type { PaymobHTTPClient } from "../../core/client.js";
 import { DEFAULT_PAYMOB_ENDPOINTS } from "../../defaults/index.js";
 import { CreateIntentionRequestSchema } from "../../types/intention.js";
@@ -19,10 +19,7 @@ export class Payment {
 	public async createIntention(
 		createIntentionRequest: CreateIntentionRequest,
 	): Promise<CreateIntentionResponse> {
-		const validatedCreateIntentionRequest = v.parse(
-			CreateIntentionRequestSchema,
-			createIntentionRequest,
-		);
+		const validatedCreateIntentionRequest = CreateIntentionRequestSchema.parse(createIntentionRequest);
 
 		return this.client
 			.post<CreateIntentionResponse>(DEFAULT_PAYMOB_ENDPOINTS.INTENTION, {

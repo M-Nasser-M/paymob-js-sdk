@@ -1,5 +1,5 @@
 import { CryptoHasher } from "bun";
-import { parse } from "valibot";
+
 import {
 	type PaymentRedirectResponseInput,
 	type WebhookResponse,
@@ -7,45 +7,43 @@ import {
 	paymentRedirectResponseSchema,
 } from "../types/webhook-response.js";
 
-
-
 export const compareHMACWebhook = (
 	data: WebhookResponse,
 	hmac: string,
 	hmacSecret: string,
 ): boolean => {
-	const parsedData = parse(WebhookResponseSchema, data);
+	const parsedData = WebhookResponseSchema.parse(data);
 
 	const hasher = new CryptoHasher("sha512", hmacSecret);
-	
-	if(parsedData.type === "TRANSACTION") {
-	const concatenatedString =
+
+	if (parsedData.type === "TRANSACTION") {
+		const concatenatedString =
 			`${parsedData.obj.amount_cents}` +
 			`${parsedData.obj.created_at}` +
 			`${parsedData.obj.currency}` +
 			`${parsedData.obj.error_occured}` +
-		`${parsedData.obj.has_parent_transaction}` +
-		`${parsedData.obj.id}` +
-		`${parsedData.obj.integration_id}` +
-		`${parsedData.obj.is_3d_secure}` +
-		`${parsedData.obj.is_auth}` +
-		`${parsedData.obj.is_capture}` +
-		`${parsedData.obj.is_refunded}` +
-		`${parsedData.obj.is_standalone_payment}` +
-		`${parsedData.obj.is_voided}` +
-		`${parsedData.obj.order.id}` +
-		`${parsedData.obj.owner}` +
-		`${parsedData.obj.pending}` +
-		`${parsedData.obj.source_data.pan}` +
-		`${parsedData.obj.source_data.sub_type}` +
-		`${parsedData.obj.source_data.type}` +
-		`${parsedData.obj.success}`;
+			`${parsedData.obj.has_parent_transaction}` +
+			`${parsedData.obj.id}` +
+			`${parsedData.obj.integration_id}` +
+			`${parsedData.obj.is_3d_secure}` +
+			`${parsedData.obj.is_auth}` +
+			`${parsedData.obj.is_capture}` +
+			`${parsedData.obj.is_refunded}` +
+			`${parsedData.obj.is_standalone_payment}` +
+			`${parsedData.obj.is_voided}` +
+			`${parsedData.obj.order.id}` +
+			`${parsedData.obj.owner}` +
+			`${parsedData.obj.pending}` +
+			`${parsedData.obj.source_data.pan}` +
+			`${parsedData.obj.source_data.sub_type}` +
+			`${parsedData.obj.source_data.type}` +
+			`${parsedData.obj.success}`;
 
-	const hash = hasher.update(concatenatedString).digest("hex");
+		const hash = hasher.update(concatenatedString).digest("hex");
 
-	return hash === hmac;
+		return hash === hmac;
 	}
-	if(parsedData.type === "TOKEN") {
+	if (parsedData.type === "TOKEN") {
 		const concatenatedString =
 			`${parsedData.obj.card_subtype}` +
 			`${parsedData.obj.created_at}` +
@@ -56,9 +54,9 @@ export const compareHMACWebhook = (
 			`${parsedData.obj.order_id}` +
 			`${parsedData.obj.token}`;
 
-	const hash = hasher.update(concatenatedString).digest("hex");
+		const hash = hasher.update(concatenatedString).digest("hex");
 
-	return hash === hmac;
+		return hash === hmac;
 	}
 
 	return false;
@@ -69,7 +67,7 @@ export const compareHMACPaymentRedirect = (
 	hmac: string,
 	hmacSecret: string,
 ): boolean => {
-	const parsedData = parse(paymentRedirectResponseSchema, data);
+	const parsedData = paymentRedirectResponseSchema.parse(data);
 
 	const hasher = new CryptoHasher("sha512", hmacSecret);
 

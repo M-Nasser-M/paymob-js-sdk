@@ -1,4 +1,4 @@
-import * as v from "valibot";
+import * as z from "zod";
 import {
 	AddressSchema,
 	BaseResourceSchema,
@@ -12,44 +12,44 @@ import {
 	urlValidation,
 } from "./common.js";
 
-export const SubscriptionFrequencySchema = v.picklist([7, 15, 30, 90, 180, 365]);
-export type SubscriptionFrequency = v.InferInput<typeof SubscriptionFrequencySchema>;
+export const SubscriptionFrequencySchema = z.enum(["7", "15", "30", "90", "180", "365"]).transform(Number); // Assuming API expects numbers but enum needs strings
+export type SubscriptionFrequency = z.input<typeof SubscriptionFrequencySchema>;
 
-export const CreateSubscriptionPlanRequestSchema = v.object({
+export const CreateSubscriptionPlanRequestSchema = z.object({
 	frequency: SubscriptionFrequencySchema,
-	name: v.string(),
-	reminder_days: v.nullable(nonNegativeInteger()),
-	retrial_days: v.nullable(nonNegativeInteger()),
-	plan_type: v.string(),
-	number_of_deductions: v.nullable(positiveInteger()),
+	name: z.string(),
+	reminder_days: nonNegativeInteger().nullable(),
+	retrial_days: nonNegativeInteger().nullable(),
+	plan_type: z.string(),
+	number_of_deductions: positiveInteger().nullable(),
 	amount_cents: amountCents(),
-	use_transaction_amount: v.boolean(),
-	is_active: v.optional(v.boolean()),
+	use_transaction_amount: z.boolean(),
+	is_active: z.boolean().optional(),
 	integration: integer(),
-	webhook_url: v.optional(v.nullable(urlValidation())),
+	webhook_url: urlValidation().nullable().optional(),
 });
-export type CreateSubscriptionPlanRequest = v.InferInput<
+export type CreateSubscriptionPlanRequest = z.input<
 	typeof CreateSubscriptionPlanRequestSchema
 >;
 
-export const SubscriptionPlanSchema = v.object({
-	...BaseResourceSchema.entries,
+export const SubscriptionPlanSchema = z.object({
+	...BaseResourceSchema.shape,
 	frequency: SubscriptionFrequencySchema,
-	name: v.string(),
-	reminder_days: v.nullable(nonNegativeInteger()),
-	retrial_days: v.nullable(nonNegativeInteger()),
-	plan_type: v.string(),
-	number_of_deductions: v.nullable(positiveInteger()),
+	name: z.string(),
+	reminder_days: nonNegativeInteger().nullable(),
+	retrial_days: nonNegativeInteger().nullable(),
+	plan_type: z.string(),
+	number_of_deductions: positiveInteger().nullable(),
 	amount_cents: amountCents(),
-	use_transaction_amount: v.boolean(),
-	is_active: v.boolean(),
+	use_transaction_amount: z.boolean(),
+	is_active: z.boolean(),
 	integration: integer(),
-	fee: v.nullable(v.number()),
+	fee: z.number().nullable(),
 });
-export type SubscriptionPlan = v.InferInput<typeof SubscriptionPlanSchema>;
+export type SubscriptionPlan = z.infer<typeof SubscriptionPlanSchema>;
 
-export const ListSubscriptionPlansResponseSchema = v.array(SubscriptionPlanSchema);
-export type ListSubscriptionPlansResponse = v.InferInput<
+export const ListSubscriptionPlansResponseSchema = z.array(SubscriptionPlanSchema);
+export type ListSubscriptionPlansResponse = z.input<
 	typeof ListSubscriptionPlansResponseSchema
 >;
 
@@ -61,33 +61,33 @@ export type ListSubscriptionPlansResponse = v.InferInput<
  * Schema for creating a subscription.
  * (Partially inferred - needs verification against actual API)
  */
-export const CreateSubscriptionRequestSchema = v.object({
+export const CreateSubscriptionRequestSchema = z.object({
 	plan_id: integer(),
-	payment_token: v.string(), // The token representing the saved card
-	...CustomerSchema.entries,
-	...AddressSchema.entries,
-	return_url: v.optional(urlValidation()),
-	charge_failure_count: v.optional(nonNegativeInteger()),
-	description: v.optional(v.string()),
-	metadata: v.optional(MetadataSchema),
+	payment_token: z.string(), // The token representing the saved card
+	...CustomerSchema.shape,
+	...AddressSchema.shape,
+	return_url: urlValidation().optional(),
+	charge_failure_count: nonNegativeInteger().optional(),
+	description: z.string().optional(),
+	metadata: MetadataSchema.optional(),
 });
-export type CreateSubscriptionRequest = v.InferInput<typeof CreateSubscriptionRequestSchema>;
+export type CreateSubscriptionRequest = z.input<typeof CreateSubscriptionRequestSchema>;
 
 /**
  * Schema for the subscription resource (response).
  * (Highly inferred - needs verification against actual API)
  */
-export const SubscriptionSchema = v.object({
-	...BaseResourceSchema.entries,
+export const SubscriptionSchema = z.object({
+	...BaseResourceSchema.shape,
 	plan: SubscriptionPlanSchema, // Assuming the plan details are nested
-	customer_details: v.object({
+	customer_details: z.object({
 		// Assuming customer info is grouped
-		...CustomerSchema.entries,
+		...CustomerSchema.shape,
 		// ... other address fields ...
 	}),
-	status: v.string(), // e.g., 'active', 'paused', 'cancelled'
+	status: z.string(), // e.g., 'active', 'paused', 'cancelled'
 	created_at: timestampValidation(),
 	updated_at: timestampValidation(),
 	// ... other fields like next_billing_date, card_token, etc.
 });
-export type Subscription = v.InferInput<typeof SubscriptionSchema>;
+export type Subscription = z.input<typeof SubscriptionSchema>;

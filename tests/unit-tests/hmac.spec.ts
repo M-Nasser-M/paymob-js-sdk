@@ -4,7 +4,7 @@ import { compareHMACPaymentRedirect, compareHMACWebhook } from "../../src/utils/
 
 const test_data = {
     webhookResponse:{
-        "type": "TRANSACTION",
+        "type": "TRANSACTION" as const,
         "obj": {
           "id": 192036465,
           "pending": false,
@@ -38,7 +38,7 @@ const test_data = {
               "city": "Cairo",
               "postal_code": "",
               "street": ""
-            },
+          },
             "collector": null,
             "amount_cents": 100000,
             "shipping_data": {

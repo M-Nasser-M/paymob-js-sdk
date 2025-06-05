@@ -1,17 +1,17 @@
-import * as v from "valibot";
+import * as z from "zod";
 
-export const paymobConfigSchema = v.object({
-	PAYMOB_API_KEY: v.string("API key is required"),
-	PAYMOB_PUBLIC_KEY: v.string("Public key is required"),
-	PAYMOB_SECRET_KEY: v.string("Secret key is required"),
-	PAYMOB_NOTIFICATION_URL: v.pipe(
-		v.string("notification URL is required"),
-		v.url("notification URL is not a valid URL"),
-	),
-	PAYMOB_REDIRECTION_URL: v.pipe(
-		v.string("redirection URL is required"),
-		v.url("redirection URL is not a valid URL"),
-	),
+export const paymobConfigSchema = z.object({
+	PAYMOB_API_KEY: z.string().min(1, "API key is required"),
+	PAYMOB_PUBLIC_KEY: z.string().min(1, "Public key is required"),
+	PAYMOB_SECRET_KEY: z.string().min(1, "Secret key is required"),
+	PAYMOB_NOTIFICATION_URL: z
+		.string()
+		.min(1, "notification URL is required")
+		.url({ message: "notification URL is not a valid URL" }),
+	PAYMOB_REDIRECTION_URL: z
+		.string()
+		.min(1, "redirection URL is required")
+		.url({ message: "redirection URL is not a valid URL" }),
 });
 
-export type PaymobConfig = v.InferOutput<typeof paymobConfigSchema>;
+export type PaymobConfig = z.output<typeof paymobConfigSchema>;

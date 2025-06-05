@@ -4,7 +4,7 @@
  */
 
 // Direct export of the main Paymob class for simpler imports
-export { Paymob } from "./core/paymob.js";
+export { PaymobSDK } from "./core/paymob.js";
 
 // Export types, resources, and utilities as needed
 export * from "./types/index.js";
