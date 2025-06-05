@@ -1,6 +1,6 @@
 {
   "name": "@m-nasser-m/paymob-sdk-eg",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Paymob typescript SDK",
   "type": "module",
   "private": false,
@@ -11,14 +11,6 @@
     ".": {
       "import": "./dist/index.js",
       "default": "./dist/index.cjs"
-    },
-    "./types": {
-      "import": "./dist/types/index.js",
-      "default": "./dist/types/index.cjs"
-    },
-    "./utils": {
-      "import": "./dist/utils/index.js",
-      "default": "./dist/utils/index.cjs"
     }
   },
   "sideEffects": false,

@@ -1,4 +1,4 @@
-import { CryptoHasher } from "bun";
+import {createHmac} from "node:crypto";
 
 import {
 	type PaymentRedirectResponseInput,
@@ -14,7 +14,7 @@ export const compareHMACWebhook = (
 ): boolean => {
 	const parsedData = WebhookResponseSchema.parse(data);
 
-	const hasher = new CryptoHasher("sha512", hmacSecret);
+	const hmacHasher = createHmac("sha512", hmacSecret);
 
 	if (parsedData.type === "TRANSACTION") {
 		const concatenatedString =
@@ -39,7 +39,7 @@ export const compareHMACWebhook = (
 			`${parsedData.obj.source_data.type}` +
 			`${parsedData.obj.success}`;
 
-		const hash = hasher.update(concatenatedString).digest("hex");
+		const hash = hmacHasher.update(concatenatedString).digest("hex");
 
 		return hash === hmac;
 	}
@@ -54,9 +54,9 @@ export const compareHMACWebhook = (
 			`${parsedData.obj.order_id}` +
 			`${parsedData.obj.token}`;
 
-		const hash = hasher.update(concatenatedString).digest("hex");
+		const hash = hmacHasher.update(concatenatedString).digest("hex");
 
-		return hash === hmac;
+		return hash === hmac ;
 	}
 
 	return false;
@@ -69,7 +69,7 @@ export const compareHMACPaymentRedirect = (
 ): boolean => {
 	const parsedData = paymentRedirectResponseSchema.parse(data);
 
-	const hasher = new CryptoHasher("sha512", hmacSecret);
+	const hmacHasher = createHmac("sha512", hmacSecret);
 
 	const concatenatedString =
 		`${parsedData.amount_cents}` +
@@ -93,7 +93,7 @@ export const compareHMACPaymentRedirect = (
 		`${parsedData["source_data.type"]}` +
 		`${parsedData.success}`;
 
-	const hash = hasher.update(concatenatedString).digest("hex");
+	const hash = hmacHasher.update(concatenatedString).digest("hex");
 
 	return hash === hmac;
 };
