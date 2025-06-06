@@ -40,7 +40,21 @@ const TokenObjectSchema = z.object({
 	next_payment_intention: z.string(),
 });
 
-export const WebhookResponseSchema = z.union([
+export const transactionWebhookResponseSchema = z.object({
+	type: z.literal("TRANSACTION"),
+	obj: TransactionObjectSchema,
+});
+
+export type TransactionWebhookResponse = z.infer<typeof transactionWebhookResponseSchema>;
+
+export const tokenWebhookResponseSchema = z.object({
+	type: z.literal("TOKEN"),
+	obj: TokenObjectSchema,
+});
+
+export type TokenWebhookResponse = z.infer<typeof tokenWebhookResponseSchema>;
+
+export const WebhookResponseSchema = z.discriminatedUnion("type", [
 	z.object({
 		type: z.literal("TRANSACTION"),
 		obj: TransactionObjectSchema,
