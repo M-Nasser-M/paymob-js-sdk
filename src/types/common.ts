@@ -53,17 +53,17 @@ export const timestampValidation = () => z.string().datetime();
  * Schema for billing data
  */
 export const BillingDataSchema = z.object({
-	apartment: z.string(),
+	apartment: z.string().optional(),
 	first_name: z.string(),
 	last_name: z.string(),
-	street: z.string(),
-	building: z.string(),
+	street: z.string().optional(),
+	building: z.string().optional(),
 	phone_number: z.string(),
-	city: z.string(),
-	country: z.string(),
-	email: emailValidation(),
-	floor: z.string(),
-	state: z.string(),
+	city: z.string().optional(),
+	country: z.string().optional(),
+	email: emailValidation().optional(),
+	floor: z.string().optional(),
+	state: z.string().optional(),
 });
 export type BillingData = z.infer<typeof BillingDataSchema>;
 

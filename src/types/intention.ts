@@ -17,16 +17,12 @@ export const CreateIntentionRequestSchema = z.object({
 	currency: z.string(), // e.g., 'EGP', 'USD'
 	payment_methods: PaymentMethodsSchema,
 	items: z.array(ItemSchema).optional(),
-	billing_data: BillingDataSchema.optional(),
-	customer: z.object({
-			first_name: z.string().optional(),
-			last_name: z.string().optional(),
-			email: emailValidation().optional(),
-			phone_number: z.string().optional(),
-		}).optional(),
-	metadata: MetadataSchema.optional(), // Optional metadata
-	setup_future_usage: z.enum(["on_session", "off_session"]).optional(), // For tokenization
-	merchant_order_id: z.string().optional(), // Your internal order ID
+	billing_data: BillingDataSchema,
+	extras: z.record(z.any()).optional(), // You can include any additional parameters
+	special_reference: z.string().optional(), // Pass a unique special reference number
+	expiration: z.number().int().positive().optional(), // The intention duration in seconds
+	notification_url: z.string().url().optional(), // URL for transaction-processed callback
+	redirection_url: z.string().url().optional(), // URL for customer redirection
 });
 export type CreateIntentionRequest = z.infer<typeof CreateIntentionRequestSchema>;
 

@@ -1,14 +1,7 @@
 import { z } from "zod";
 
 const ENVSchema = z.object({
-	MOBILE_WALLET_INTEGERATION_ID: z
-		.string()
-		.transform(Number)
-		.pipe(z.number()),
-	CARD_INTEGERATION_ID: z
-		.string()
-		.transform(Number)
-		.pipe(z.number()),
+INTEGRATION_IDs: z.string().transform(val=>val.split(",").map(id=>Number(id))),
 	PAYMOB_API_KEY: z.string(),
 	PAYMOB_PUBLIC_KEY: z.string(),
 	PAYMOB_SECRET_KEY: z.string(),

@@ -1,4 +1,4 @@
-import {createHmac} from "node:crypto";
+import { createHmac } from "node:crypto";
 
 import {
 	type PaymentRedirectResponseInput,
@@ -56,7 +56,7 @@ export const compareHMACWebhook = (
 
 		const hash = hmacHasher.update(concatenatedString).digest("hex");
 
-		return hash === hmac ;
+		return hash === hmac;
 	}
 
 	return false;

@@ -19,7 +19,8 @@ export class Payment {
 	public async createIntention(
 		createIntentionRequest: CreateIntentionRequest,
 	): Promise<CreateIntentionResponse> {
-		const validatedCreateIntentionRequest = CreateIntentionRequestSchema.parse(createIntentionRequest);
+		const validatedCreateIntentionRequest =
+			CreateIntentionRequestSchema.parse(createIntentionRequest);
 
 		return this.client
 			.post<CreateIntentionResponse>(DEFAULT_PAYMOB_ENDPOINTS.INTENTION, {

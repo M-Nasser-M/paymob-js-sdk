@@ -14,4 +14,3 @@ export * from "./resources/subscriptions/index.js";
 export * from "./resources/auth/index.js";
 export { compareHMACWebhook, compareHMACPaymentRedirect } from "./utils/compare-hmac.js";
 export * from "./types/index.js";
-

@@ -12,7 +12,9 @@ import {
 	urlValidation,
 } from "./common.js";
 
-export const SubscriptionFrequencySchema = z.enum(["7", "15", "30", "90", "180", "365"]).transform(Number); // Assuming API expects numbers but enum needs strings
+export const SubscriptionFrequencySchema = z
+	.enum(["7", "15", "30", "90", "180", "365"])
+	.transform(Number); // Assuming API expects numbers but enum needs strings
 export type SubscriptionFrequency = z.input<typeof SubscriptionFrequencySchema>;
 
 export const CreateSubscriptionPlanRequestSchema = z.object({
@@ -28,9 +30,7 @@ export const CreateSubscriptionPlanRequestSchema = z.object({
 	integration: integer(),
 	webhook_url: urlValidation().nullable().optional(),
 });
-export type CreateSubscriptionPlanRequest = z.input<
-	typeof CreateSubscriptionPlanRequestSchema
->;
+export type CreateSubscriptionPlanRequest = z.input<typeof CreateSubscriptionPlanRequestSchema>;
 
 export const SubscriptionPlanSchema = z.object({
 	...BaseResourceSchema.shape,
@@ -49,9 +49,7 @@ export const SubscriptionPlanSchema = z.object({
 export type SubscriptionPlan = z.infer<typeof SubscriptionPlanSchema>;
 
 export const ListSubscriptionPlansResponseSchema = z.array(SubscriptionPlanSchema);
-export type ListSubscriptionPlansResponse = z.input<
-	typeof ListSubscriptionPlansResponseSchema
->;
+export type ListSubscriptionPlansResponse = z.input<typeof ListSubscriptionPlansResponseSchema>;
 
 // --- Subscription Schemas ---
 // NOTE: Postman collection didn't show full request/response for creating/getting subscriptions.
