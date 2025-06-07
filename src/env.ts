@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 const ENVSchema = z.object({
-INTEGRATION_IDs: z.string().transform(val=>val.split(",").map(id=>Number(id))),
+	INTEGRATION_IDs: z.string().transform((val) => val.split(",").map((id) => Number(id))),
 	PAYMOB_API_KEY: z.string(),
 	PAYMOB_PUBLIC_KEY: z.string(),
 	PAYMOB_SECRET_KEY: z.string(),
