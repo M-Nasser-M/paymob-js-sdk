@@ -30,14 +30,14 @@ export class Payment {
 	}
 
 	public async getPaymentUrl(client_secret: string): Promise<string> {
-		return getFormattedUnifiedCheckoutUrl(client_secret);
+		return getFormattedUnifiedCheckoutUrl(client_secret, this.paymobConfig.PAYMOB_PUBLIC_KEY);
 	}
 
 	public async createIntentionAndGetUrl(
 		createIntentionRequest: CreateIntentionRequest,
 	): Promise<string> {
 		const { client_secret } = await this.createIntention(createIntentionRequest);
-		return getFormattedUnifiedCheckoutUrl(client_secret);
+		return getFormattedUnifiedCheckoutUrl(client_secret, this.paymobConfig.PAYMOB_PUBLIC_KEY);
 	}
 
 	public async voidTransaction(transactionID: string) {
