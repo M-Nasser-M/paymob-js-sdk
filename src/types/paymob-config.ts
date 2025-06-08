@@ -12,7 +12,7 @@ export const paymobConfigSchema = z.object({
 		.string()
 		.min(1, "redirection URL is required")
 		.url({ message: "redirection URL is not a valid URL" }),
-	INTEGRATION_IDs: z.string().transform((val) => val.split(",").map((id) => Number(id))),
+	PAYMOB_PAYMENT_INTEGRATION_IDS: z.string().transform((val) => val.split(",").map((id) => Number(id))),
 	PAYMOB_HMAC_SECRET: z.string().min(1, "HMAC secret is required"),
 });
 
