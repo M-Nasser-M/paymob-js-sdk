@@ -260,25 +260,25 @@ export type BaseTransactionResponse = z.input<typeof BaseTransactionResponseSche
 
 // Transaction operation request schemas
 export const RefundRequestSchema = z.object({
-	transaction_id: integer(),
+	transaction_id: z.string(),
 	amount_cents: positiveInteger(), // Must refund at least 1 cent
 	reason: z.string().optional(),
 });
 export type RefundRequest = z.input<typeof RefundRequestSchema>;
 
 export const CaptureRequestSchema = z.object({
-	transaction_id: integer(),
+	transaction_id: z.string(),
 	amount_cents: positiveInteger(), // Must capture at least 1 cent
 });
 export type CaptureRequest = z.input<typeof CaptureRequestSchema>;
 
 export const VoidRequestSchema = z.object({
-	transaction_id: integer(),
+	transaction_id: z.string(),
 });
 export type VoidRequest = z.input<typeof VoidRequestSchema>;
 
 export const TransactionInquiryRequestSchema = z.object({
-	transaction_id: integer(),
+	transaction_id: z.string(),
 });
 export type TransactionInquiryRequest = z.input<typeof TransactionInquiryRequestSchema>;
 
@@ -286,24 +286,24 @@ export type TransactionInquiryRequest = z.input<typeof TransactionInquiryRequest
 // Refund Transaction Data Schema
 export const RefundTransactionDataSchema = z.object({
 	...BaseTransactionDataSchema.shape,
-	transaction_id: integer(),
-	parent_id: integer(),
+	transaction_id: z.string(),
+	parent_id: z.string(),
 });
 export type RefundTransactionData = z.input<typeof RefundTransactionDataSchema>;
 
 // Capture Transaction Data Schema
 export const CaptureTransactionDataSchema = z.object({
 	...BaseTransactionDataSchema.shape,
-	transaction_id: integer(),
-	parent_id: integer(),
+	transaction_id: z.string(),
+	parent_id: z.string(),
 });
 export type CaptureTransactionData = z.input<typeof CaptureTransactionDataSchema>;
 
 // Void Transaction Data Schema
 export const VoidTransactionDataSchema = z.object({
 	...BaseTransactionDataSchema.shape,
-	transaction_id: integer(),
-	parent_id: integer(),
+	transaction_id: z.string(),
+	parent_id: z.string(),
 });
 export type VoidTransactionData = z.input<typeof VoidTransactionDataSchema>;
 
@@ -333,7 +333,7 @@ const PaymentMigsTransactionSchema = z.object({
 
 export const PaymentTransactionDataSchema = z.object({
 	...BaseTransactionDataSchema.shape,
-	transaction_id: integer(),
+	transaction_id: z.string(),
 	migs_order: PaymentMigsOrderSchema,
 	migs_transaction: PaymentMigsTransactionSchema,
 });
@@ -415,7 +415,7 @@ export const TransactionResponseSchema = z.object({
 	has_parent_transaction: z.boolean(),
 	data: PaymentTransactionDataSchema,
 	payment_key_claims: PaymentKeyClaimsSchema.optional(),
-	parent_transaction: integer().optional(),
+	parent_transaction: z.string().optional(),
 	unique_ref: z.string(),
 });
 export type TransactionResponse = z.input<typeof TransactionResponseSchema>;
