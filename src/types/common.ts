@@ -72,7 +72,7 @@ export type BillingData = z.infer<typeof BillingDataSchema>;
  */
 export const ItemSchema = z.object({
 	name: z.string(),
-	amount_cents: amountCents(),
+	amount: amountCents(),
 	description: z.string(),
 	quantity: positiveInteger(),
 });
