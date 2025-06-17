@@ -69,7 +69,7 @@ export type WebhookResponse = z.infer<typeof WebhookResponseSchema>;
 
 export const paymentRedirectResponseSchema = z
 	.object({
-		"https://accept.paymobsolutions.com/api/acceptance/post_pay?id": z.number(),
+		id: z.number(),
 		pending: z.boolean(),
 		amount_cents: z.number(),
 		success: z.boolean(),
@@ -92,12 +92,6 @@ export const paymentRedirectResponseSchema = z
 		txn_response_code: z.number(),
 		hmac: z.string(),
 	})
-	.transform((data) => {
-		return {
-			...data,
-			id: data["https://accept.paymobsolutions.com/api/acceptance/post_pay?id"],
-		};
-	});
 
 export type PaymentRedirectResponseInput = z.input<typeof paymentRedirectResponseSchema>;
 export type PaymentRedirectResponseOutput = z.output<typeof paymentRedirectResponseSchema>;
