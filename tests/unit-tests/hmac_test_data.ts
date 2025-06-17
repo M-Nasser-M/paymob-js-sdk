@@ -211,7 +211,7 @@ export const test_data = {
       },
     
     paymentRedirectResponse:{
-        "https://accept.paymobsolutions.com/api/acceptance/post_pay?id": 201972898,
+        "id": 201972898,
         "pending": false,
         "amount_cents": 200000,
         "success": true,
